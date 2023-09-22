@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import Button from "./Button";
-import VerticalDots from "../assets/icon-vertical-ellipsis.svg";
+import Menus from "./Menus";
 import LogoLight from "../assets/company-logo-light.svg";
 import Modal from "./Modal";
 import AddTask from "../features/tasks/AddTask";
@@ -77,7 +77,15 @@ function Header({ hide }) {
             <AddTask />
           </Modal.Window>
         </Modal>
-        <Dots src={VerticalDots} />
+        <Menus>
+          <Menus.Menu>
+            <Menus.Toggle id={"view"} />
+            <Menus.List id={"view"}>
+              <Menus.Button type="edit">Edit Task</Menus.Button>
+              <Menus.Button type="delete">Delete Task</Menus.Button>
+            </Menus.List>
+          </Menus.Menu>
+        </Menus>
       </TaskContainer>
     </StyledHeader>
   );

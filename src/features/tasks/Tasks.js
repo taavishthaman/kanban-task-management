@@ -20,6 +20,10 @@ function Tasks({ boardData }) {
     setTasksData(boardData);
   }, [boardData]);
 
+  if (!tasksData || !tasksData.columns.length) {
+    return <EmptyBoard />;
+  }
+
   function onDragEnd(result) {
     const { destination, source, draggableId } = result;
 

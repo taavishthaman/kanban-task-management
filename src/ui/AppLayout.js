@@ -22,9 +22,12 @@ const Main = styled.main`
   width: ${(props) => {
     return props.hide === true ? "100vw" : "calc(100vw - 30rem)";
   }};
+  transition: width 0.2s ease;
   background-color: var(--color-light-grey-light);
   padding: 2.4rem;
   overflow-x: scroll;
+  height: calc(100vh - 9.6rem);
+  position: relative;
 `;
 
 function AppLayout() {

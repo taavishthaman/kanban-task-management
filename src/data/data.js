@@ -438,6 +438,10 @@ const data = {
         },
       ],
     },
+    {
+      name: "Test Board",
+      columns: [],
+    },
   ],
 };
 

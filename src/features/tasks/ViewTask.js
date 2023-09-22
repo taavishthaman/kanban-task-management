@@ -4,6 +4,7 @@ import styled from "styled-components";
 import VerticalDots from "../../assets/icon-vertical-ellipsis.svg";
 import Select from "react-select";
 import StyledCheckbox from "../../ui/StyledCheckbox";
+import Menus from "../../ui/Menus";
 
 const FormBody = styled.div`
   display: flex;
@@ -81,12 +82,21 @@ function ViewTask({ taskData }) {
     { value: "Doing", label: "Doing" },
     { value: "Done", label: "Done" },
   ];
+
   return (
     <Form>
       <FormBody>
         <StyledHeader>
           <StyledTitle>{title}</StyledTitle>
-          <Dots src={VerticalDots} />
+          <Menus>
+            <Menus.Menu>
+              <Menus.Toggle id={"view"} />
+              <Menus.List id={"view"}>
+                <Menus.Button type="edit">Edit Task</Menus.Button>
+                <Menus.Button type="delete">Delete Task</Menus.Button>
+              </Menus.List>
+            </Menus.Menu>
+          </Menus>
         </StyledHeader>
         {description && <StyledDescription>{description}</StyledDescription>}
         {subtasks && (
