@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const colorMap = {
   primary: {
@@ -18,6 +19,9 @@ const StyledButton = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => {
+    if (props.darkMode && props.type === "secondary") {
+      return "var(--color-white)";
+    }
     return colorMap[props.type]["background"];
   }};
   color: ${(props) => {
@@ -32,7 +36,12 @@ const StyledButton = styled.div`
 `;
 
 function FormButton({ type, children }) {
-  return <StyledButton type={type}>{children}</StyledButton>;
+  const { darkMode } = useSelector((state) => state.app);
+  return (
+    <StyledButton type={type} darkMode={darkMode}>
+      {children}
+    </StyledButton>
+  );
 }
 
 export default FormButton;

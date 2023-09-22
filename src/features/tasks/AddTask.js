@@ -1,8 +1,9 @@
-import styled, { Textarea } from "styled-components";
+import styled from "styled-components";
 import Form from "../../ui/Form";
 import CrossIcon from "../../assets/icon-cross.svg";
 import FormButton from "../../ui/FormButton";
-import Select from "react-select";
+import Selector from "../../ui/Selector";
+import { useSelector } from "react-redux";
 
 const FormBody = styled.div`
   display: flex;
@@ -16,6 +17,11 @@ const StyledTitle = styled.div`
   font-weight: 700;
   line-height: normal;
   width: 38.7rem;
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
 `;
 
 const ElementGroup = styled.div`
@@ -39,7 +45,17 @@ const TextField = styled.input.attrs({
   border: 1px solid rgba(130, 143, 163, 0.25);
   height: 4rem;
   padding: 0.8rem 1.6rem;
-  color: var(--color-black);
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-dark-grey)"
+      : "var(--color-white)";
+  }};
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
+
   font-size: 1.3rem;
   width: 100%;
   &:focus {
@@ -47,7 +63,11 @@ const TextField = styled.input.attrs({
     border-color: var(--color-main-purple);
   }
   &::placeholder {
-    color: rgba(0, 0, 0, 0.25);
+    color: ${(props) => {
+      return props.darkMode === true
+        ? "rgba(255, 255, 255, 0.25)"
+        : "rgba(0, 0, 0, 0.25)";
+    }};
   }
 `;
 
@@ -59,12 +79,26 @@ const TextArea = styled.textarea`
   height: 11.2rem;
   font-size: 1.3rem;
   resize: none;
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-dark-grey)"
+      : "var(--color-white)";
+  }};
   &:focus {
     outline: none;
     border-color: var(--color-main-purple);
   }
   &::placeholder {
-    color: rgba(0, 0, 0, 0.25);
+    color: ${(props) => {
+      return props.darkMode === true
+        ? "rgba(255, 255, 255, 0.25)"
+        : "rgba(0, 0, 0, 0.25)";
+    }};
   }
 `;
 
@@ -81,18 +115,14 @@ const Close = styled.img`
 `;
 
 function AddTask() {
-  const options = [
-    { value: "Todo", label: "Todo" },
-    { value: "Doing", label: "Doing" },
-    { value: "Done", label: "Done" },
-  ];
+  const { darkMode } = useSelector((state) => state.app);
   return (
     <Form>
       <FormBody>
-        <StyledTitle>Add New Task</StyledTitle>
+        <StyledTitle darkMode={darkMode}>Add New Task</StyledTitle>
         <ElementGroup>
           <SubTitle>Title</SubTitle>
-          <TextField placeholder="e.g. Take coffee break" />
+          <TextField placeholder="e.g. Take coffee break" darkMode={darkMode} />
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Description</SubTitle>
@@ -100,57 +130,30 @@ function AddTask() {
             placeholder="e.g. It’s always good to take a break. This 15 minute break will 
 recharge the batteries a little."
             height={"4rem"}
+            darkMode={darkMode}
           />
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Subtasks</SubTitle>
           <SubtaskElement>
-            <TextField placeholder="e.g. Make coffee"></TextField>
+            <TextField
+              placeholder="e.g. Make coffee"
+              darkMode={darkMode}
+            ></TextField>
             <Close src={CrossIcon} />
           </SubtaskElement>
           <SubtaskElement>
-            <TextField placeholder="e.g. Drink coffee & smile"></TextField>
+            <TextField
+              placeholder="e.g. Drink coffee & smile"
+              darkMode={darkMode}
+            ></TextField>
             <Close src={CrossIcon} />
           </SubtaskElement>
           <FormButton type="secondary">+ Add New Subtask</FormButton>
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Status</SubTitle>
-          <Select
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                "&:hover": { borderColor: "#635FC7" },
-                borderColor: "#E4EBFA",
-                boxShadow: "none",
-                fontFamily: "Plus Jakarta Sans",
-                fontSize: "13px",
-                fontStyle: "normal",
-                fontWeight: 500,
-                lineHeight: "23px",
-              }),
-              option: (styles, { isSelected }) => {
-                return {
-                  ...styles,
-                  color: "var(--color-medium-grey)",
-                  fontSize: "13px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "23px",
-                  backgroundColor: isSelected
-                    ? "var(--color-light-grey-light)"
-                    : "var(--color-white)",
-                };
-              },
-              placeholder: (defaultStyles) => {
-                return {
-                  ...defaultStyles,
-                  color: "rgba(0, 0, 0, 0.25)",
-                };
-              },
-            }}
-            options={options}
-          />
+          <Selector />
         </ElementGroup>
         <ElementGroup>
           <FormButton type="primary">Create Task</FormButton>

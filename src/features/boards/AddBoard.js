@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Form from "../../ui/Form";
 import CrossIcon from "../../assets/icon-cross.svg";
 import FormButton from "../../ui/FormButton";
+import { useSelector } from "react-redux";
 
 const FormBody = styled.div`
   display: flex;
@@ -15,6 +16,11 @@ const StyledTitle = styled.div`
   font-weight: 700;
   line-height: normal;
   width: 38.7rem;
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
 `;
 
 const ElementGroup = styled.div`
@@ -38,7 +44,17 @@ const TextField = styled.input.attrs({
   border: 1px solid rgba(130, 143, 163, 0.25);
   height: 4rem;
   padding: 0.8rem 1.6rem;
-  color: var(--color-black);
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-dark-grey)"
+      : "var(--color-white)";
+  }};
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
+
   font-size: 1.3rem;
   width: 100%;
   &:focus {
@@ -46,7 +62,11 @@ const TextField = styled.input.attrs({
     border-color: var(--color-main-purple);
   }
   &::placeholder {
-    color: rgba(0, 0, 0, 0.25);
+    color: ${(props) => {
+      return props.darkMode === true
+        ? "rgba(255, 255, 255, 0.25)"
+        : "rgba(0, 0, 0, 0.25)";
+    }};
   }
 `;
 
@@ -63,22 +83,23 @@ const Close = styled.img`
 `;
 
 function AddBoard() {
+  const { darkMode } = useSelector((state) => state.app);
   return (
     <Form>
       <FormBody>
-        <StyledTitle>Add New Board</StyledTitle>
+        <StyledTitle darkMode={darkMode}>Add New Board</StyledTitle>
         <ElementGroup>
           <SubTitle>Name</SubTitle>
-          <TextField placeholder="e.g. Web Design" />
+          <TextField placeholder="e.g. Web Design" darkMode={darkMode} />
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Columns</SubTitle>
           <SubtaskElement>
-            <TextField defaultValue={"Todo"}></TextField>
+            <TextField defaultValue={"Todo"} darkMode={darkMode}></TextField>
             <Close src={CrossIcon} />
           </SubtaskElement>
           <SubtaskElement>
-            <TextField defaultValue={"Doing"}></TextField>
+            <TextField defaultValue={"Doing"} darkMode={darkMode}></TextField>
             <Close src={CrossIcon} />
           </SubtaskElement>
           <FormButton type="secondary">+ Add New Column</FormButton>

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import Modal from "../../ui/Modal";
 import ViewTask from "./ViewTask";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   padding: 2.3rem 1.6rem;
@@ -9,10 +10,13 @@ const Container = styled.div`
   background-color: var(--color-white);
   margin-bottom: 2rem;
   width: 28rem;
+  background-color: ${(props) =>
+    props.darkMode ? "var(--color-dark-grey)" : "var(--color-white)"};
 `;
 
 const Title = styled.p`
-  color: var(--color-black);
+  color: ${(props) =>
+    props.darkMode ? "var(--color-white)" : "var(--color-black)"};
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 700;
@@ -29,6 +33,7 @@ const Subtask = styled.p`
 `;
 
 function Task({ task, index }) {
+  const { darkMode } = useSelector((state) => state.app);
   return (
     <Draggable draggableId={task.title} index={index}>
       {(provided, snapshot) => {
@@ -40,9 +45,10 @@ function Task({ task, index }) {
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
                 isDragging={snapshot.isDragging}
+                darkMode={darkMode}
               >
-                <Title>{task.title}</Title>
-                <Subtask>
+                <Title darkMode={darkMode}>{task.title}</Title>
+                <Subtask darkMode={darkMode}>
                   {task.subtasks.filter((task) => task.isCompleted).length} of{" "}
                   {task.subtasks.length} subtasks
                 </Subtask>

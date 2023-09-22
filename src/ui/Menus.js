@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
+import { useSelector } from "react-redux";
 
 const Menu = styled.div`
   display: flex;
@@ -34,7 +35,12 @@ const StyledList = styled.ul`
   border-radius: 8px;
   display: block;
   list-style-type: none;
-  background-color: var(--color-white);
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-very-dark-grey-dark)"
+      : "var(--color-white)";
+  }};
+
   z-index: 10;
   width: 19.2rem;
   height: 9.4rem;
@@ -105,7 +111,7 @@ function Toggle({ id }) {
   }
   return (
     <StyledToggle onClick={(e) => handleClick(e)}>
-      <HiEllipsisVertical />
+      <HiEllipsisVertical color="#828FA3" />
     </StyledToggle>
   );
 }
@@ -113,11 +119,12 @@ function Toggle({ id }) {
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
   const { ref } = useOutsideClick(close);
+  const { darkMode } = useSelector((state) => state.app);
 
   if (openId !== id) return null;
 
   return (
-    <StyledList position={position} ref={ref}>
+    <StyledList position={position} ref={ref} darkMode={darkMode}>
       {children}
     </StyledList>
   );

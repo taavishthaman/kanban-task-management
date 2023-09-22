@@ -1,14 +1,27 @@
 import { styled, css } from "styled-components";
 import IconBoard from "../assets/icon-board.svg";
 import IconBoardSelected from "../assets/icon-board-selected.svg";
+import { useSelector } from "react-redux";
 
 const variationsBackground = {
-  unselected: css`
-    background-color: var(--color-white);
-  `,
-  selected: css`
-    background-color: var(--color-main-purple);
-  `,
+  unselected: {
+    light: css`
+      background-color: var(--color-white);
+    `,
+
+    dark: css`
+      background-color: var(--color-dark-grey);
+    `,
+  },
+  selected: {
+    light: css`
+      background-color: var(--color-main-purple);
+    `,
+
+    dark: css`
+      background-color: var(--color-main-purple);
+    `,
+  },
 };
 
 const variationsColor = {
@@ -29,7 +42,8 @@ const StyledSelectBoard = styled.div`
   padding-left: 3.2rem;
   align-items: center;
   ${(props) => {
-    return variationsBackground[props.variation];
+    const mode = props.darkMode ? "dark" : "light";
+    return variationsBackground[props.variation][mode];
   }}
   cursor: pointer;
 `;
@@ -53,9 +67,12 @@ function SelectBoard({
   setSelectedBoardData,
   boardData,
 }) {
+  const { darkMode } = useSelector((state) => state.app);
+
   return (
     <StyledSelectBoard
       variation={`${selected ? "selected" : "unselected"}`}
+      darkMode={darkMode}
       onClick={() => {
         setSelectedBoard(name);
         setSelectedBoardData(

@@ -2,13 +2,18 @@ import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
+import { useSelector } from "react-redux";
 
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--color-white);
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-dark-grey)"
+      : "var(--color-white)";
+  }};
   border-radius: 6px;
   padding: 3.2rem;
   transition: all 0.5s;
@@ -48,12 +53,13 @@ function Open({ children, opens: opensWindowName }) {
 function Window({ name, children }) {
   const { openName, close } = useContext(ModalContext);
   const { ref } = useOutsideClick(close);
+  const { darkMode } = useSelector((state) => state.app);
 
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref}>
+      <StyledModal ref={ref} darkMode={darkMode}>
         <div>{cloneElement(children, { onCloseModal: close })}</div>
       </StyledModal>
     </Overlay>,

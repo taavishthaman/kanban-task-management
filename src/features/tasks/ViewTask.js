@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import Form from "../../ui/Form";
 import styled from "styled-components";
-import VerticalDots from "../../assets/icon-vertical-ellipsis.svg";
-import Select from "react-select";
 import StyledCheckbox from "../../ui/StyledCheckbox";
 import Menus from "../../ui/Menus";
+import { useSelector } from "react-redux";
+import Selector from "../../ui/Selector";
 
 const FormBody = styled.div`
   display: flex;
@@ -24,11 +24,11 @@ const StyledTitle = styled.div`
   font-weight: 700;
   line-height: normal;
   width: 38.7rem;
-`;
-
-const Dots = styled.img`
-  height: 2rem;
-  cursor: pointer;
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
 `;
 
 const StyledDescription = styled.div`
@@ -58,12 +58,21 @@ const Subtasks = styled.div`
 
 const Subtask = styled.div`
   border-radius: 4px;
-  background-color: var(--color-light-grey-light);
+  /* background-color: var(--color-light-grey-light); */
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-very-dark-grey-dark)"
+      : "var(--color-light-grey-light)";
+  }};
   min-height: 4rem;
   display: flex;
   align-items: center;
   padding: 1.2rem;
-  color: var(--color-black);
+  color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-white)"
+      : "var(--color-black)";
+  }};
   font-size: 1.2rem;
   font-style: normal;
   font-weight: 700;
@@ -77,17 +86,14 @@ const SelectDiv = styled.div`
 
 function ViewTask({ taskData }) {
   const { title, description, subtasks } = taskData;
-  const options = [
-    { value: "Todo", label: "Todo" },
-    { value: "Doing", label: "Doing" },
-    { value: "Done", label: "Done" },
-  ];
+
+  const { darkMode } = useSelector((state) => state.app);
 
   return (
     <Form>
       <FormBody>
         <StyledHeader>
-          <StyledTitle>{title}</StyledTitle>
+          <StyledTitle darkMode={darkMode}>{title}</StyledTitle>
           <Menus>
             <Menus.Menu>
               <Menus.Toggle id={"view"} />
@@ -104,7 +110,7 @@ function ViewTask({ taskData }) {
             <SubHeading>Subtasks (2 of 3)</SubHeading>
             <Subtasks>
               {subtasks.map((subtask) => (
-                <Subtask>
+                <Subtask darkMode={darkMode}>
                   <StyledCheckbox />
                   {subtask.title}
                 </Subtask>
@@ -115,41 +121,7 @@ function ViewTask({ taskData }) {
         <div>
           <SubHeading>Current Status</SubHeading>
           <SelectDiv>
-            <Select
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  "&:hover": { borderColor: "#635FC7" },
-                  borderColor: "#E4EBFA",
-                  boxShadow: "none",
-                  fontFamily: "Plus Jakarta Sans",
-                  fontSize: "13px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "23px",
-                }),
-                option: (styles, { isSelected }) => {
-                  return {
-                    ...styles,
-                    color: "var(--color-medium-grey)",
-                    fontSize: "13px",
-                    fontStyle: "normal",
-                    fontWeight: 500,
-                    lineHeight: "23px",
-                    backgroundColor: isSelected
-                      ? "var(--color-light-grey-light)"
-                      : "var(--color-white)",
-                  };
-                },
-                placeholder: (defaultStyles) => {
-                  return {
-                    ...defaultStyles,
-                    color: "rgba(0, 0, 0, 0.25)",
-                  };
-                },
-              }}
-              options={options}
-            />
+            <Selector />
           </SelectDiv>
         </div>
       </FormBody>

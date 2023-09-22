@@ -3,14 +3,19 @@ import Logo from "./Logo";
 import Boards from "../features/boards/Boards";
 import ThemeSwitcher from "./ThemeSwitcher";
 import HideSidebar from "./HideSidebar";
+import { useSelector } from "react-redux";
 
 const StyledSidebar = styled.aside`
-  background-color: var(--color-white);
+  background-color: ${(props) =>
+    props.darkMode ? "var(--color-dark-grey)" : "var(--color-white)"};
   display: flex;
   flex-direction: column;
   grid-row: 1 / -1;
   height: 100vh;
-  border: 1px solid var(--color-lines-light);
+  border: ${(props) =>
+    props.darkMode
+      ? "1px solid var(--color-lines-dark)"
+      : "1px solid var(--color-lines-light)"};
   justify-content: space-between;
 `;
 
@@ -23,8 +28,10 @@ function Sidebar({
   selectedBoardData,
   setSelectedBoardData,
 }) {
+  const { darkMode } = useSelector((state) => state.app);
+
   return (
-    <StyledSidebar>
+    <StyledSidebar darkMode={darkMode}>
       <div>
         <Logo />
         <Boards

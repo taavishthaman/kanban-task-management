@@ -2,18 +2,24 @@ import { styled } from "styled-components";
 import Button from "./Button";
 import Menus from "./Menus";
 import LogoLight from "../assets/company-logo-light.svg";
+import LogoDark from "../assets/company-logo-dark.svg";
 import Modal from "./Modal";
 import AddTask from "../features/tasks/AddTask";
+import { useSelector } from "react-redux";
 
 const StyledHeader = styled.header`
   display: flex;
   align-items: center;
-  background-color: var(--color-white);
+  background-color: ${(props) =>
+    props.darkMode ? "var(--color-dark-grey)" : "var(--color-white)"};
   height: 9.6rem;
   grid-column: 2 / -1;
   grid-row: 1 / 2;
   z-index: 10;
-  border-bottom: 1px solid var(--color-lines-light);
+  border-bottom: ${(props) =>
+    props.darkMode
+      ? "1px solid var(--color-lines-dark)"
+      : "1px solid var(--color-lines-light)"};
   padding: 0 2.4rem;
   justify-content: space-between;
   transition: width 0.2s;
@@ -24,7 +30,8 @@ const StyledHeader = styled.header`
 `;
 
 const BoardName = styled.p`
-  color: var(--color-black);
+  color: ${(props) =>
+    props.darkMode ? "var(--color-white)" : "var(--color-black)"};
   font-size: 2.4rem;
   font-style: normal;
   font-weight: 700;
@@ -53,18 +60,26 @@ const StyledHiddenLogo = styled.div`
   align-items: center;
   justify-content: center;
   width: 20rem;
-  border-right: 1px solid #e4ebfa;
+  border-right: ${(props) =>
+    props.darkMode
+      ? "1px solid var(--color-lines-dark)"
+      : "1px solid var(--color-lines-light)"};
   height: 9.6rem;
 `;
 
 const StyledImg = styled.img``;
 
 function Header({ hide }) {
+  const { darkMode } = useSelector((state) => state.app);
   return (
-    <StyledHeader hide={hide}>
+    <StyledHeader hide={hide} darkMode={darkMode}>
       <HeaderLogoContainer>
-        {hide && <LogoHidden />}
-        <BoardName>Platform Launch</BoardName>
+        {hide && (
+          <StyledHiddenLogo darkMode={darkMode}>
+            <StyledImg src={darkMode ? LogoDark : LogoLight} />
+          </StyledHiddenLogo>
+        )}
+        <BoardName darkMode={darkMode}>Platform Launch</BoardName>
       </HeaderLogoContainer>
       <TaskContainer>
         <Modal>
@@ -88,14 +103,6 @@ function Header({ hide }) {
         </Menus>
       </TaskContainer>
     </StyledHeader>
-  );
-}
-
-function LogoHidden() {
-  return (
-    <StyledHiddenLogo>
-      <StyledImg src={LogoLight} />
-    </StyledHiddenLogo>
   );
 }
 

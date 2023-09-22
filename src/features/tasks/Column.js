@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   border-radius: 2px;
@@ -23,10 +24,16 @@ const Title = styled.p`
 
 const TaskList = styled.div`
   padding: 8px;
-  background-color: ${(props) =>
-    props.isDraggingOver
-      ? "var(--color-medium-grey)"
-      : "var(--color-light-grey-light)"};
+  background-color: ${(props) => {
+    if (props.isDraggingOver) {
+      return "var(--color-medium-grey)";
+    } else if (props.darkMode) {
+      return "var(--color-very-dark-grey-dark)";
+    } else {
+      return "var(--color-light-grey-light)";
+    }
+  }};
+
   transition: background-color 0.2s ease;
   overflow-y: scroll;
   min-width: 30rem;
@@ -42,6 +49,7 @@ const Circle = styled.div`
 `;
 
 function Column({ column, tasks }) {
+  const { darkMode } = useSelector((state) => state.app);
   return (
     <Container>
       <Title>
@@ -55,6 +63,7 @@ function Column({ column, tasks }) {
               ref={provided.innerRef}
               {...provided.droppableProps}
               isDraggingOver={snapshot.isDraggingOver}
+              darkMode={darkMode}
             >
               {tasks.map((task, index) => (
                 <Task key={task.title} task={task} index={index} />

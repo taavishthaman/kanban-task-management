@@ -6,6 +6,7 @@ import EmptyBoard from "./EmptyBoard";
 import Toggler from "./Toggler";
 import Tasks from "../features/tasks/Tasks";
 import data from "../data/data";
+import { useSelector } from "react-redux";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -23,7 +24,11 @@ const Main = styled.main`
     return props.hide === true ? "100vw" : "calc(100vw - 30rem)";
   }};
   transition: width 0.2s ease;
-  background-color: var(--color-light-grey-light);
+  background-color: ${(props) => {
+    return props.darkMode === true
+      ? "var(--color-very-dark-grey-dark)"
+      : "var(--color-light-grey-light)";
+  }};
   padding: 2.4rem;
   overflow-x: scroll;
   height: calc(100vh - 9.6rem);
@@ -35,6 +40,7 @@ function AppLayout() {
   const [boardData, setBoardData] = useState(data);
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBoardData, setSelectedBoardData] = useState(null);
+  const { darkMode } = useSelector((state) => state.app);
 
   return (
     <>
@@ -51,7 +57,7 @@ function AppLayout() {
         <div>
           <Header hide={hide} />
           <MainContainer>
-            <Main hide={hide}>
+            <Main hide={hide} darkMode={darkMode}>
               <Tasks boardData={selectedBoardData} />
               {hide && <Toggler setHide={setHide} />}
             </Main>
