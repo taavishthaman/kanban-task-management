@@ -1,25 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import EmptyBoard from "../../ui/EmptyBoard";
-import initialData from "../../initial-data";
 import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
+import NewColumn from "../../ui/NewColumn";
 
 const Container = styled.div`
   display: flex;
+  gap: 1.2rem;
 `;
 
 function Tasks({ boardData }) {
-  const [tasksData, setTasksData] = useState(initialData);
+  // const [tasksData, setTasksData] = useState(initialData);
 
-  // const [tasksData, setTasksData] = useState(boardData);
+  const [tasksData, setTasksData] = useState(null);
 
-  console.log(boardData);
-
-  //   if (!tasksData.tasks.length) {
-  //     return <EmptyBoard />;
-  //   }
+  useEffect(() => {
+    setTasksData(boardData);
+  }, [boardData]);
 
   function onDragEnd(result) {
     const { destination, source, draggableId } = result;
@@ -35,73 +34,31 @@ function Tasks({ boardData }) {
       return;
     }
 
-    const start = tasksData.columns[source.droppableId];
-    const finish = tasksData.columns[destination.droppableId];
+    const newTasksData = Object.assign({}, tasksData);
+    //Retrieve the task
+    const task = newTasksData.columns
+      .find((column) => column.name === source.droppableId)
+      .tasks.splice(source.index, 1)
+      .at(0);
 
-    if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+    //Insert the task at its new location
+    newTasksData.columns
+      .find((column) => column.name === destination.droppableId)
+      .tasks.splice(destination.index, 0, task);
 
-      const newColumn = {
-        ...start,
-        taskIds: newTaskIds,
-      };
-
-      const newTasksData = {
-        ...tasksData,
-        columns: {
-          ...tasksData.columns,
-          [newColumn.id]: newColumn,
-        },
-      };
-
-      setTasksData(newTasksData);
-      return;
-    }
-
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
-    const newStart = {
-      ...start,
-      taskIds: startTaskIds,
-    };
-
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
-    const newFinish = {
-      ...finish,
-      taskIds: finishTaskIds,
-    };
-
-    const newState = {
-      ...tasksData,
-      columns: {
-        ...tasksData.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish,
-      },
-    };
-
-    setTasksData(newState);
-    //Call the API after this operation to make changes in the DB
+    //Update the state
+    setTasksData(newTasksData);
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Container>
-        {tasksData.columnOrder.map((columnId) => {
-          const column = tasksData.columns[columnId];
-
-          const tasks = column.taskIds.map((taskId) => tasksData.tasks[taskId]);
-
-          return <Column key={column.id} column={column} tasks={tasks} />;
-        })}
-
-        {/* {tasksData?.columns.map((column) => {
+        {tasksData?.columns?.map((column) => {
           const tasks = column.tasks;
+          /* Change key to an ID later */
           return <Column key={column.title} column={column} tasks={tasks} />;
-        })} */}
+        })}
+        <NewColumn />
       </Container>
     </DragDropContext>
   );

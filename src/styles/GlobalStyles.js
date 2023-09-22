@@ -10,6 +10,7 @@ const GlobalStyles = createGlobalStyle`
         --color-white : #FFFFFF;
         --color-red : #EA5555;
         --color-red-hover : #FF9898;
+        --color-backdrop : rgba(0,0,0,0.5);
 
         /* LIGHT MODE */
         --color-light-grey-light : #F4F7FD;
@@ -36,7 +37,7 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body {
-        overflow-y: hidden;
+        overflow: hidden;
     }
 `;
 

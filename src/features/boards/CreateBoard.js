@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import IconAddBoard from "../../assets/icon-add-board.svg";
+import Modal from "../../ui/Modal";
+import AddBoard from "./AddBoard";
 
 const StyledExportButton = styled.div`
   width: 27.6rem;
@@ -23,10 +25,19 @@ const BoardIconImg = styled.img``;
 
 function CreateBoard() {
   return (
-    <StyledExportButton>
-      <BoardIconImg src={IconAddBoard} />
-      <CreateBoardText>+ Create New Board</CreateBoardText>
-    </StyledExportButton>
+    <>
+      <Modal>
+        <Modal.Open opens="add-board">
+          <StyledExportButton>
+            <BoardIconImg src={IconAddBoard} />
+            <CreateBoardText>+ Create New Board</CreateBoardText>
+          </StyledExportButton>
+        </Modal.Open>
+        <Modal.Window name="add-board">
+          <AddBoard />
+        </Modal.Window>
+      </Modal>
+    </>
   );
 }
 

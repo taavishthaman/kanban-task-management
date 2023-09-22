@@ -4,7 +4,6 @@ import { Droppable } from "react-beautiful-dnd";
 
 const Container = styled.div`
   border-radius: 2px;
-  width: 28rem;
   display: flex;
   flex-direction: column;
 `;
@@ -28,9 +27,10 @@ const TaskList = styled.div`
     props.isDraggingOver
       ? "var(--color-medium-grey)"
       : "var(--color-light-grey-light)"};
-  flex-grow: 1;
   transition: background-color 0.2s ease;
-  min-height: 100px;
+  overflow-y: scroll;
+  min-width: 30rem;
+  height: 60.7rem;
 `;
 
 const Circle = styled.div`
@@ -46,9 +46,9 @@ function Column({ column, tasks }) {
     <Container>
       <Title>
         <Circle />
-        {column.title}
+        {column.name}
       </Title>
-      <Droppable droppableId={column.id}>
+      <Droppable droppableId={column.name}>
         {(provided, snapshot) => {
           return (
             <TaskList
@@ -57,7 +57,7 @@ function Column({ column, tasks }) {
               isDraggingOver={snapshot.isDraggingOver}
             >
               {tasks.map((task, index) => (
-                <Task key={task.id} task={task} index={index} />
+                <Task key={task.title} task={task} index={index} />
               ))}
               {provided.placeholder}
             </TaskList>

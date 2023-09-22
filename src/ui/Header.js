@@ -2,6 +2,8 @@ import { styled } from "styled-components";
 import Button from "./Button";
 import VerticalDots from "../assets/icon-vertical-ellipsis.svg";
 import LogoLight from "../assets/company-logo-light.svg";
+import Modal from "./Modal";
+import AddTask from "../features/tasks/AddTask";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -14,6 +16,11 @@ const StyledHeader = styled.header`
   border-bottom: 1px solid var(--color-lines-light);
   padding: 0 2.4rem;
   justify-content: space-between;
+  transition: width 0.2s;
+  white-space: nowrap;
+  width: ${(props) => {
+    return props.hide === true ? "100vw" : "calc(100vw - 30rem)";
+  }};
 `;
 
 const BoardName = styled.p`
@@ -54,13 +61,22 @@ const StyledImg = styled.img``;
 
 function Header({ hide }) {
   return (
-    <StyledHeader>
+    <StyledHeader hide={hide}>
       <HeaderLogoContainer>
         {hide && <LogoHidden />}
         <BoardName>Platform Launch</BoardName>
       </HeaderLogoContainer>
       <TaskContainer>
-        <Button>+ Add New Task</Button>
+        <Modal>
+          <Modal.Open opens="add-task">
+            <div>
+              <Button>+ Add New Task</Button>
+            </div>
+          </Modal.Open>
+          <Modal.Window name="add-task">
+            <AddTask />
+          </Modal.Window>
+        </Modal>
         <Dots src={VerticalDots} />
       </TaskContainer>
     </StyledHeader>

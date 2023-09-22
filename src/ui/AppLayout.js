@@ -15,13 +15,16 @@ const StyledAppLayout = styled.div`
   transition: grid-template-columns 0.2s ease;
 `;
 
+const MainContainer = styled.div``;
+
 const Main = styled.main`
-  overflow-x: scroll;
   background-color: blue;
-  height: 100vh;
+  width: ${(props) => {
+    return props.hide === true ? "100vw" : "calc(100vw - 30rem)";
+  }};
   background-color: var(--color-light-grey-light);
   padding: 2.4rem;
-  position: relative;
+  overflow-x: scroll;
 `;
 
 function AppLayout() {
@@ -31,23 +34,28 @@ function AppLayout() {
   const [selectedBoardData, setSelectedBoardData] = useState(null);
 
   return (
-    <StyledAppLayout hide={hide}>
-      <Sidebar
-        setHide={setHide}
-        boardData={boardData}
-        selectedBoard={selectedBoard}
-        setSelectedBoard={setSelectedBoard}
-        selectedBoardData={selectedBoardData}
-        setSelectedBoardData={setSelectedBoardData}
-      />
-      <div>
-        <Header hide={hide} />
-        <Main>
-          <Tasks boardData={selectedBoardData} />
-          {hide && <Toggler setHide={setHide} />}
-        </Main>
-      </div>
-    </StyledAppLayout>
+    <>
+      <StyledAppLayout hide={hide}>
+        <Sidebar
+          hide={hide}
+          setHide={setHide}
+          boardData={boardData}
+          selectedBoard={selectedBoard}
+          setSelectedBoard={setSelectedBoard}
+          selectedBoardData={selectedBoardData}
+          setSelectedBoardData={setSelectedBoardData}
+        />
+        <div>
+          <Header hide={hide} />
+          <MainContainer>
+            <Main hide={hide}>
+              <Tasks boardData={selectedBoardData} />
+              {hide && <Toggler setHide={setHide} />}
+            </Main>
+          </MainContainer>
+        </div>
+      </StyledAppLayout>
+    </>
   );
 }
 

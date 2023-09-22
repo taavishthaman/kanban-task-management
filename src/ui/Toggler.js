@@ -4,7 +4,7 @@ import TogglerIcon from "../assets/toggler.svg";
 const StyledToggler = styled.img`
   position: absolute;
   left: 0;
-  bottom: 12.8rem;
+  bottom: 3.2rem;
   cursor: pointer;
 `;
 

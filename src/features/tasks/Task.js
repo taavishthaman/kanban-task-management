@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import Modal from "../../ui/Modal";
+import ViewTask from "./ViewTask";
 
 const Container = styled.div`
   padding: 2.3rem 1.6rem;
   border-radius: 8px;
   background-color: var(--color-white);
   margin-bottom: 2rem;
+  width: 28rem;
 `;
 
 const Title = styled.p`
@@ -27,18 +30,28 @@ const Subtask = styled.p`
 
 function Task({ task, index }) {
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.title} index={index}>
       {(provided, snapshot) => {
         return (
-          <Container
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
-          >
-            <Title>{task.content}</Title>
-            <Subtask>0 of 6 subtasks</Subtask>
-          </Container>
+          <Modal>
+            <Modal.Open opens="view-task">
+              <Container
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                ref={provided.innerRef}
+                isDragging={snapshot.isDragging}
+              >
+                <Title>{task.title}</Title>
+                <Subtask>
+                  {task.subtasks.filter((task) => task.isCompleted).length} of{" "}
+                  {task.subtasks.length} subtasks
+                </Subtask>
+              </Container>
+            </Modal.Open>
+            <Modal.Window name="view-task">
+              <ViewTask taskData={task} />
+            </Modal.Window>
+          </Modal>
         );
       }}
     </Draggable>

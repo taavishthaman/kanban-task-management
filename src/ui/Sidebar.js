@@ -15,6 +15,7 @@ const StyledSidebar = styled.aside`
 `;
 
 function Sidebar({
+  hide,
   setHide,
   boardData,
   selectedBoard,
@@ -35,7 +36,7 @@ function Sidebar({
         />
       </div>
       <div>
-        <ThemeSwitcher />
+        {!hide && <ThemeSwitcher />}
         <HideSidebar setHide={setHide} />
       </div>
     </StyledSidebar>
