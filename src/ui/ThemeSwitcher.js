@@ -5,6 +5,7 @@ import Switch from "react-switch";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { changeMode } from "../features/appSlice";
+import { device } from "../styles/device";
 
 const StyledThemeSwitcher = styled.div`
   width: 25.1rem;
@@ -20,6 +21,10 @@ const StyledThemeSwitcher = styled.div`
   justify-content: center;
   gap: 2rem;
   border-radius: 5px;
+  @media ${device.tablet} {
+    width: 23.5rem;
+    margin-left: 1.3rem;
+  }
 `;
 
 const ThemeIcon = styled.img``;

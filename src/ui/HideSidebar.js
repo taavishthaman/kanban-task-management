@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import EyeIcon from "../assets/icon-eye.svg";
 import { useState } from "react";
+import { device } from "../styles/device";
 
 const StyledHideSidebar = styled.div`
   display: flex;
@@ -9,6 +10,10 @@ const StyledHideSidebar = styled.div`
   padding-bottom: 4.8rem;
   padding-left: 3.1rem;
   cursor: pointer;
+  @media ${device.tablet} {
+    padding-left: 2.4rem;
+    gap: 1rem;
+  }
 `;
 
 const Icon = styled.img``;

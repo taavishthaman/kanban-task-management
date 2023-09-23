@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../styles/device";
 
 const StyledButton = styled.div`
   background-color: var(--color-main-purple);
@@ -11,10 +12,16 @@ const StyledButton = styled.div`
   font-size: 1.5rem;
   color: var(--color-white);
   cursor: pointer;
+  height: ${(props) => (props.type === "mobile" ? "3.2rem" : "4.8rem")};
+  width: ${(props) => (props.type === "mobile" ? "4.8rem" : "16.4rem")};
 `;
 
-function Button({ handleClick = null, children }) {
-  return <StyledButton onClick={handleClick}>{children}</StyledButton>;
+function Button({ handleClick = null, children, type }) {
+  return (
+    <StyledButton onClick={handleClick} type={type}>
+      {children}
+    </StyledButton>
+  );
 }
 
 export default Button;

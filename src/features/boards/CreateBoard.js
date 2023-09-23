@@ -2,6 +2,7 @@ import styled from "styled-components";
 import IconAddBoard from "../../assets/icon-add-board.svg";
 import Modal from "../../ui/Modal";
 import AddBoard from "./AddBoard";
+import { device } from "../../styles/device";
 
 const StyledExportButton = styled.div`
   width: 27.6rem;
@@ -11,6 +12,10 @@ const StyledExportButton = styled.div`
   padding-left: 3.2rem;
   align-items: center;
   cursor: pointer;
+  @media ${device.tablet} {
+    padding-left: 2.4rem;
+    width: 24rem;
+  }
 `;
 
 const CreateBoardText = styled.p`

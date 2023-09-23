@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import SelectBoard from "../../ui/SelectBoard";
 import CreateBoard from "./CreateBoard";
-import { useState } from "react";
+import { device } from "../../styles/device";
 
 const StyledBoards = styled.div``;
 const BoardsStatus = styled.div`
@@ -13,6 +13,13 @@ const BoardsStatus = styled.div`
   line-height: normal;
   padding-left: 3.2rem;
   padding-top: 0.5rem;
+  @media ${device.tablet} {
+    padding-left: 2.4rem;
+  }
+
+  @media ${device.mobile} {
+    padding: 1.6rem 2.4rem;
+  }
 `;
 
 const AllBoards = styled.div`
@@ -23,21 +30,24 @@ function Boards({
   boardData,
   selectedBoard,
   setSelectedBoard,
+  selectedBoardData,
   setSelectedBoardData,
 }) {
+  console.log("Board Data ", boardData);
   return (
     <StyledBoards>
       <BoardsStatus>All Boards (3)</BoardsStatus>
       <AllBoards>
-        {boardData.boards.map((boards) => (
-          <SelectBoard
-            name={boards.name}
-            selected={selectedBoard === boards.name}
-            setSelectedBoard={setSelectedBoard}
-            setSelectedBoardData={setSelectedBoardData}
-            boardData={boardData}
-          />
-        ))}
+        {boardData &&
+          boardData.boards.map((boards) => (
+            <SelectBoard
+              name={boards.name}
+              selected={selectedBoard === boards.name}
+              setSelectedBoard={setSelectedBoard}
+              setSelectedBoardData={setSelectedBoardData}
+              boardData={boardData}
+            />
+          ))}
         <CreateBoard />
       </AllBoards>
     </StyledBoards>

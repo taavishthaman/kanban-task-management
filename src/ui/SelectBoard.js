@@ -2,6 +2,7 @@ import { styled, css } from "styled-components";
 import IconBoard from "../assets/icon-board.svg";
 import IconBoardSelected from "../assets/icon-board-selected.svg";
 import { useSelector } from "react-redux";
+import { device } from "../styles/device";
 
 const variationsBackground = {
   unselected: {
@@ -46,6 +47,11 @@ const StyledSelectBoard = styled.div`
     return variationsBackground[props.variation][mode];
   }}
   cursor: pointer;
+
+  @media ${device.tablet} {
+    width: 24rem;
+    padding-left: 2.4rem;
+  }
 `;
 
 const BoardName = styled.p`

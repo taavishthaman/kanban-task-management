@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import LogoLight from "../assets/company-logo-light.svg";
 import LogoDark from "../assets/company-logo-dark.svg";
 import { useSelector } from "react-redux";
+import { device } from "../styles/device";
 
 const StyledLogo = styled.div`
   display: flex;
@@ -9,6 +10,10 @@ const StyledLogo = styled.div`
   align-items: center;
   height: 9.6rem;
   padding-left: 3.4rem;
+  @media ${device.tablet} {
+    height: 8rem;
+    padding-left: 2.4rem;
+  }
 `;
 
 const StyledImg = styled.img``;

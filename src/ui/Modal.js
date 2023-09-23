@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useSelector } from "react-redux";
+import { device } from "../styles/device";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -18,6 +19,16 @@ const StyledModal = styled.div`
   padding: 3.2rem;
   transition: all 0.5s;
   width: 48rem;
+
+  @media ${device.mobile} {
+    width: ${(props) => {
+      return props.type === "mobile" ? "27rem" : "35rem";
+    }};
+
+    padding: ${(props) => {
+      return props.type === "mobile" ? "0" : "2.4rem";
+    }};
+  }
 `;
 
 const Overlay = styled.div`
@@ -50,7 +61,7 @@ function Open({ children, opens: opensWindowName }) {
   return cloneElement(children, { onClick: () => open(opensWindowName) });
 }
 
-function Window({ name, children }) {
+function Window({ name, type, children }) {
   const { openName, close } = useContext(ModalContext);
   const { ref } = useOutsideClick(close);
   const { darkMode } = useSelector((state) => state.app);
@@ -59,7 +70,7 @@ function Window({ name, children }) {
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref} darkMode={darkMode}>
+      <StyledModal ref={ref} darkMode={darkMode} type={type}>
         <div>{cloneElement(children, { onCloseModal: close })}</div>
       </StyledModal>
     </Overlay>,

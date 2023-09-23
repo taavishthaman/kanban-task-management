@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
-import EmptyBoard from "./EmptyBoard";
-import Toggler from "./Toggler";
 import Tasks from "../features/tasks/Tasks";
 import data from "../data/data";
 import { useSelector } from "react-redux";
+import Toggler from "./Toggler";
+import { size, device } from "../styles/device";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -14,6 +14,15 @@ const StyledAppLayout = styled.div`
     return props.hide === true ? "0 1fr" : "30rem 1fr";
   }};
   transition: grid-template-columns 0.2s ease;
+  @media ${device.tablet} {
+    grid-template-columns: ${(props) => {
+      return props.hide === true ? "0 1fr" : "26rem 1fr";
+    }};
+  }
+
+  @media ${device.mobile} {
+    grid-template-columns: 0 1fr;
+  }
 `;
 
 const MainContainer = styled.div``;
@@ -33,6 +42,14 @@ const Main = styled.main`
   overflow-x: scroll;
   height: calc(100vh - 9.6rem);
   position: relative;
+
+  /* Tablet */
+  @media ${device.tablet} {
+    width: ${(props) => {
+      return props.hide === true ? "100vw" : "calc(100vw - 26rem)";
+    }};
+    height: calc(100vh - 6.4rem);
+  }
 `;
 
 function AppLayout() {
@@ -41,6 +58,12 @@ function AppLayout() {
   const [selectedBoard, setSelectedBoard] = useState("");
   const [selectedBoardData, setSelectedBoardData] = useState(null);
   const { darkMode } = useSelector((state) => state.app);
+
+  useEffect(() => {
+    if (window.innerWidth <= size.mobile) {
+      setHide(true);
+    }
+  }, []);
 
   return (
     <>
@@ -55,7 +78,15 @@ function AppLayout() {
           setSelectedBoardData={setSelectedBoardData}
         />
         <div>
-          <Header hide={hide} />
+          <Header
+            hide={hide}
+            setHide={setHide}
+            boardData={boardData}
+            selectedBoard={selectedBoard}
+            setSelectedBoard={setSelectedBoard}
+            selectedBoardData={selectedBoardData}
+            setSelectedBoardData={setSelectedBoardData}
+          />
           <MainContainer>
             <Main hide={hide} darkMode={darkMode}>
               <Tasks boardData={selectedBoardData} />
