@@ -168,8 +168,8 @@ function Header({
             <Menus.Menu>
               <Menus.Toggle id={"view"} />
               <Menus.List id={"view"}>
-                <Menus.Button type="edit">Edit Task</Menus.Button>
-                <Menus.Button type="delete">Delete Task</Menus.Button>
+                <Menus.Button type="edit">Edit Board</Menus.Button>
+                <Menus.Button type="delete">Delete Board</Menus.Button>
               </Menus.List>
             </Menus.Menu>
           </Menus>
@@ -202,8 +202,8 @@ function Header({
           <Menus.Menu>
             <Menus.Toggle id={"view"} />
             <Menus.List id={"view"}>
-              <Menus.Button type="edit">Edit Task</Menus.Button>
-              <Menus.Button type="delete">Delete Task</Menus.Button>
+              <Menus.Button type="edit">Edit Board</Menus.Button>
+              <Menus.Button type="delete">Delete Board</Menus.Button>
             </Menus.List>
           </Menus.Menu>
         </Menus>

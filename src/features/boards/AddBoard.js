@@ -102,10 +102,12 @@ function AddBoard() {
             <TextField defaultValue={"Doing"} darkMode={darkMode}></TextField>
             <Close src={CrossIcon} />
           </SubtaskElement>
-          <FormButton type="secondary">+ Add New Column</FormButton>
+          <FormButton variation="secondary" type="button">
+            + Add New Column
+          </FormButton>
         </ElementGroup>
         <ElementGroup>
-          <FormButton type="primary">Create New Board</FormButton>
+          <FormButton variation="primary">Create New Board</FormButton>
         </ElementGroup>
       </FormBody>
     </Form>

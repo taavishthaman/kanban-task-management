@@ -35,7 +35,7 @@ const Subtask = styled.p`
 function Task({ task, index }) {
   const { darkMode } = useSelector((state) => state.app);
   return (
-    <Draggable draggableId={task.title} index={index}>
+    <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => {
         return (
           <Modal>

@@ -5,6 +5,7 @@ import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import NewColumn from "../../ui/NewColumn";
+import { useMoveTask } from "./useMoveTask";
 
 const Container = styled.div`
   display: flex;
@@ -15,6 +16,7 @@ function Tasks({ boardData }) {
   // const [tasksData, setTasksData] = useState(initialData);
 
   const [tasksData, setTasksData] = useState(null);
+  const { isMoving, moveTask } = useMoveTask();
 
   useEffect(() => {
     setTasksData(boardData);
@@ -39,19 +41,31 @@ function Tasks({ boardData }) {
     }
 
     const newTasksData = Object.assign({}, tasksData);
+
     //Retrieve the task
     const task = newTasksData.columns
-      .find((column) => column.name === source.droppableId)
+      .find((column) => column._id === source.droppableId)
       .tasks.splice(source.index, 1)
       .at(0);
 
     //Insert the task at its new location
     newTasksData.columns
-      .find((column) => column.name === destination.droppableId)
+      .find((column) => column._id === destination.droppableId)
       .tasks.splice(destination.index, 0, task);
 
     //Update the state
     setTasksData(newTasksData);
+
+    console.log("Destination ", destination);
+
+    //Make the API call
+    const dataObj = {
+      srcColumnId: source.droppableId,
+      destColumnId: destination.droppableId,
+      taskId: draggableId,
+      destIndex: destination.index,
+    };
+    moveTask(dataObj);
   }
 
   return (
@@ -60,7 +74,7 @@ function Tasks({ boardData }) {
         {tasksData?.columns?.map((column) => {
           const tasks = column.tasks;
           /* Change key to an ID later */
-          return <Column key={column.title} column={column} tasks={tasks} />;
+          return <Column key={column._id} column={column} tasks={tasks} />;
         })}
         <NewColumn />
       </Container>

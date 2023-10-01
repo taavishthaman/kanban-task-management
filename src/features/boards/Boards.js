@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import SelectBoard from "../../ui/SelectBoard";
 import CreateBoard from "./CreateBoard";
 import { device } from "../../styles/device";
+import useBoards from "./useBoards";
 
 const StyledBoards = styled.div``;
 const BoardsStatus = styled.div`
@@ -27,19 +28,22 @@ const AllBoards = styled.div`
 `;
 
 function Boards({
-  boardData,
   selectedBoard,
   setSelectedBoard,
   selectedBoardData,
   setSelectedBoardData,
 }) {
-  console.log("Board Data ", boardData);
+  const { isLoading, boards: boardData } = useBoards();
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <StyledBoards>
-      <BoardsStatus>All Boards (3)</BoardsStatus>
+      <BoardsStatus>All Boards ({boardData.data.data.length})</BoardsStatus>
       <AllBoards>
         {boardData &&
-          boardData.boards.map((boards) => (
+          boardData.data.data.map((boards) => (
             <SelectBoard
               name={boards.name}
               selected={selectedBoard === boards.name}

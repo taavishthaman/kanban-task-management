@@ -12,33 +12,44 @@ const colorMap = {
   },
 };
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
   height: 4rem;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: ${(props) => {
-    if (props.darkMode && props.type === "secondary") {
+    if (props.darkMode && props.variation === "secondary") {
       return "var(--color-white)";
     }
-    return colorMap[props.type]["background"];
+    return colorMap[props.variation]["background"];
   }};
   color: ${(props) => {
-    return colorMap[props.type]["color"];
+    return colorMap[props.variation]["color"];
   }};
   border-radius: 2rem;
   font-size: 1.3rem;
   font-style: normal;
   font-weight: 700;
   line-height: 2.3rem;
-  cursor: pointer;
 `;
 
-function FormButton({ type, children }) {
+function FormButton({ variation, type, onClick, children }) {
   const { darkMode } = useSelector((state) => state.app);
   return (
-    <StyledButton type={type} darkMode={darkMode}>
+    <StyledButton
+      variation={variation}
+      type={type}
+      onClick={onClick}
+      darkMode={darkMode}
+    >
       {children}
     </StyledButton>
   );

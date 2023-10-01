@@ -1,9 +1,12 @@
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import Form from "../../ui/Form";
 import CrossIcon from "../../assets/icon-cross.svg";
 import FormButton from "../../ui/FormButton";
 import Selector from "../../ui/Selector";
 import { useSelector } from "react-redux";
+import { useCreateTask } from "./useCreateTask";
+import { useState, useEffect } from "react";
 
 const FormBody = styled.div`
   display: flex;
@@ -28,6 +31,7 @@ const ElementGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
 `;
 
 const SubTitle = styled.div`
@@ -42,7 +46,12 @@ const TextField = styled.input.attrs({
   type: "input",
 })`
   border-radius: 4px;
-  border: 1px solid rgba(130, 143, 163, 0.25);
+  border: ${(props) => {
+    console.log(props.error);
+    return props.error
+      ? "1px solid var(--color-red)"
+      : "1px solid rgba(130, 143, 163, 0.25)";
+  }};
   height: 4rem;
   padding: 0.8rem 1.6rem;
   background-color: ${(props) => {
@@ -73,7 +82,7 @@ const TextField = styled.input.attrs({
 
 const TextArea = styled.textarea`
   border-radius: 4px;
-  border: 1px solid rgba(130, 143, 163, 0.25);
+  border: "1px solid rgba(130, 143, 163, 0.25)";
   color: var(--color-black);
   padding: 0.8rem 1.6rem;
   height: 11.2rem;
@@ -102,10 +111,36 @@ const TextArea = styled.textarea`
   }
 `;
 
+const ErrorMessageMain = styled.p`
+  color: var(--color-red);
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 2.3rem;
+  position: absolute;
+  right: 1.6rem;
+  top: 3rem;
+`;
+
+const ErrorMessage = styled.p`
+  color: var(--color-red);
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 2.3rem;
+  position: absolute;
+  right: 4.2rem;
+  top: 0.9rem;
+`;
+
 const SubtaskElement = styled.div`
   display: flex;
   gap: 1.6rem;
   align-items: center;
+`;
+
+const SubtaskContainer = styled.div`
+  position: relative;
 `;
 
 const Close = styled.img`
@@ -114,15 +149,60 @@ const Close = styled.img`
   cursor: pointer;
 `;
 
-function AddTask() {
+function AddTask({ taskToEdit = {} }) {
+  //This form should run in either edit or create mode...
+  const { id: taskId, ...editValues } = taskToEdit;
+
   const { darkMode } = useSelector((state) => state.app);
+  const isEditSession = Boolean(taskId);
+
+  const { isCreating, createTask } = useCreateTask();
+
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isEditSession ? editValues : {},
+  });
+
+  const { errors } = formState;
+
+  const [subtasks, setSubtasks] = useState([
+    { placeholder: "e.g. Make coffee" },
+    { placeholder: "e.g. Drink coffee & smile" },
+  ]);
+
+  function onSubmit(data) {
+    console.log("Here...", data);
+  }
+
+  function addSubtask() {
+    setSubtasks((subtasks) => {
+      return [...subtasks, { placeholder: "e.g. My new subtask" }];
+    });
+  }
+
+  function onError(errors) {
+    console.log("Errors ", errors);
+  }
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormBody>
         <StyledTitle darkMode={darkMode}>Add New Task</StyledTitle>
         <ElementGroup>
           <SubTitle>Title</SubTitle>
-          <TextField placeholder="e.g. Take coffee break" darkMode={darkMode} />
+          <TextField
+            placeholder="e.g. Take coffee break"
+            darkMode={darkMode}
+            type="text"
+            id="title"
+            disabled={isCreating}
+            {...register("title", {
+              required: isEditSession ? false : "Can't be empty!",
+            })}
+            error={errors?.title?.message}
+          />
+          {errors?.title?.message && (
+            <ErrorMessageMain>Can't be empty!</ErrorMessageMain>
+          )}
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Description</SubTitle>
@@ -135,31 +215,67 @@ recharge the batteries a little."
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Subtasks</SubTitle>
-          <SubtaskElement>
-            <TextField
-              placeholder="e.g. Make coffee"
+          {subtasks.map((subtask, index) => (
+            <Subtask
+              index={index}
               darkMode={darkMode}
-            ></TextField>
-            <Close src={CrossIcon} />
-          </SubtaskElement>
-          <SubtaskElement>
-            <TextField
-              placeholder="e.g. Drink coffee & smile"
-              darkMode={darkMode}
-            ></TextField>
-            <Close src={CrossIcon} />
-          </SubtaskElement>
-          <FormButton type="secondary">+ Add New Subtask</FormButton>
+              placeholder={subtask.placeholder}
+              setSubtasks={setSubtasks}
+              isCreating={isCreating}
+              register={register}
+              isEditSession={isEditSession}
+              error={errors[`subtask-${index}`]?.message}
+            />
+          ))}
+          <FormButton variation="secondary" type="button" onClick={addSubtask}>
+            + Add New Subtask
+          </FormButton>
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Status</SubTitle>
           <Selector />
         </ElementGroup>
         <ElementGroup>
-          <FormButton type="primary">Create Task</FormButton>
+          <FormButton variation="primary">Create Task</FormButton>
         </ElementGroup>
       </FormBody>
     </Form>
+  );
+}
+
+function Subtask({
+  index,
+  darkMode,
+  placeholder,
+  setSubtasks,
+  isCreating,
+  register,
+  isEditSession,
+  error,
+}) {
+  function deleteSubtask() {
+    setSubtasks((subtasks) => subtasks.filter((sub, i) => i !== index));
+  }
+
+  return (
+    <SubtaskContainer>
+      <SubtaskElement>
+        <TextField
+          index={index}
+          placeholder={placeholder}
+          darkMode={darkMode}
+          disabled={isCreating}
+          {...register(`subtask-${index}`, {
+            required: isEditSession
+              ? false
+              : `Subtask-${index} Can't be empty!`,
+          })}
+          error={error}
+        ></TextField>
+        <Close src={CrossIcon} onClick={deleteSubtask} />
+      </SubtaskElement>
+      {error && <ErrorMessage>Can't be empty!</ErrorMessage>}
+    </SubtaskContainer>
   );
 }
 

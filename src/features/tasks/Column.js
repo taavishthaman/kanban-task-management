@@ -56,7 +56,7 @@ function Column({ column, tasks }) {
         <Circle />
         {column.name}
       </Title>
-      <Droppable droppableId={column.name}>
+      <Droppable droppableId={column._id}>
         {(provided, snapshot) => {
           return (
             <TaskList
@@ -66,7 +66,7 @@ function Column({ column, tasks }) {
               darkMode={darkMode}
             >
               {tasks.map((task, index) => (
-                <Task key={task.title} task={task} index={index} />
+                <Task key={task._id} task={task} index={index} />
               ))}
               {provided.placeholder}
             </TaskList>

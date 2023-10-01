@@ -82,7 +82,7 @@ function SelectBoard({
       onClick={() => {
         setSelectedBoard(name);
         setSelectedBoardData(
-          boardData.boards.find((data) => data.name === name)
+          boardData.data.data.find((data) => data.name === name)
         );
       }}
     >
