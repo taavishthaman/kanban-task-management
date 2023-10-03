@@ -3,7 +3,6 @@ import Header from "./Header";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import Tasks from "../features/tasks/Tasks";
-import data from "../data/data";
 import { useSelector } from "react-redux";
 import Toggler from "./Toggler";
 import { size, device } from "../styles/device";
@@ -54,9 +53,6 @@ const Main = styled.main`
 
 function AppLayout() {
   const [hide, setHide] = useState(false);
-  const [boardData, setBoardData] = useState(data);
-  const [selectedBoard, setSelectedBoard] = useState("");
-  const [selectedBoardData, setSelectedBoardData] = useState(null);
   const { darkMode } = useSelector((state) => state.app);
 
   useEffect(() => {
@@ -68,28 +64,12 @@ function AppLayout() {
   return (
     <>
       <StyledAppLayout hide={hide}>
-        <Sidebar
-          hide={hide}
-          setHide={setHide}
-          boardData={boardData}
-          selectedBoard={selectedBoard}
-          setSelectedBoard={setSelectedBoard}
-          selectedBoardData={selectedBoardData}
-          setSelectedBoardData={setSelectedBoardData}
-        />
+        <Sidebar hide={hide} setHide={setHide} />
         <div>
-          <Header
-            hide={hide}
-            setHide={setHide}
-            boardData={boardData}
-            selectedBoard={selectedBoard}
-            setSelectedBoard={setSelectedBoard}
-            selectedBoardData={selectedBoardData}
-            setSelectedBoardData={setSelectedBoardData}
-          />
+          <Header hide={hide} setHide={setHide} />
           <MainContainer>
             <Main hide={hide} darkMode={darkMode}>
-              <Tasks boardData={selectedBoardData} />
+              <Tasks />
               {hide && <Toggler setHide={setHide} />}
             </Main>
           </MainContainer>

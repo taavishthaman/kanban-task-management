@@ -49,7 +49,7 @@ function Task({ task, index }) {
               >
                 <Title darkMode={darkMode}>{task.title}</Title>
                 <Subtask darkMode={darkMode}>
-                  {task.subtasks.filter((task) => task.isCompleted).length} of{" "}
+                  {task.subtasks.filter((task) => task.completed).length} of{" "}
                   {task.subtasks.length} subtasks
                 </Subtask>
               </Container>

@@ -3,6 +3,9 @@ import SelectBoard from "../../ui/SelectBoard";
 import CreateBoard from "./CreateBoard";
 import { device } from "../../styles/device";
 import useBoards from "./useBoards";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { setBoards } from "./boardSlice";
 
 const StyledBoards = styled.div``;
 const BoardsStatus = styled.div`
@@ -27,13 +30,15 @@ const AllBoards = styled.div`
   padding-top: 1.9rem;
 `;
 
-function Boards({
-  selectedBoard,
-  setSelectedBoard,
-  selectedBoardData,
-  setSelectedBoardData,
-}) {
+function Boards() {
   const { isLoading, boards: boardData } = useBoards();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (boardData?.data?.data) {
+      dispatch(setBoards(boardData.data.data));
+    }
+  }, [boardData, dispatch]);
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -44,13 +49,7 @@ function Boards({
       <AllBoards>
         {boardData &&
           boardData.data.data.map((boards) => (
-            <SelectBoard
-              name={boards.name}
-              selected={selectedBoard === boards.name}
-              setSelectedBoard={setSelectedBoard}
-              setSelectedBoardData={setSelectedBoardData}
-              boardData={boardData}
-            />
+            <SelectBoard name={boards.name} boardData={boardData} />
           ))}
         <CreateBoard />
       </AllBoards>

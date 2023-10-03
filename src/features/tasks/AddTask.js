@@ -47,7 +47,6 @@ const TextField = styled.input.attrs({
 })`
   border-radius: 4px;
   border: ${(props) => {
-    console.log(props.error);
     return props.error
       ? "1px solid var(--color-red)"
       : "1px solid rgba(130, 143, 163, 0.25)";
@@ -149,7 +148,7 @@ const Close = styled.img`
   cursor: pointer;
 `;
 
-function AddTask({ taskToEdit = {} }) {
+function AddTask({ taskToEdit = {}, onCloseModal }) {
   //This form should run in either edit or create mode...
   const { id: taskId, ...editValues } = taskToEdit;
 
@@ -165,17 +164,64 @@ function AddTask({ taskToEdit = {} }) {
   const { errors } = formState;
 
   const [subtasks, setSubtasks] = useState([
-    { placeholder: "e.g. Make coffee" },
-    { placeholder: "e.g. Drink coffee & smile" },
+    { placeholder: "e.g. Make coffee", key: 0 },
+    { placeholder: "e.g. Drink coffee & smile", key: 1 },
   ]);
 
+  const { selectedBoard, boards } = useSelector((state) => state.board);
+  const [selectorOptions, setSelectorOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  useEffect(() => {
+    if (selectedBoard) {
+      const columnOptions = boards
+        .filter((board) => board.name === selectedBoard)
+        .at(0)
+        .columns.map((column) => {
+          return {
+            label: column.name,
+            value: column.name,
+            id: column._id,
+          };
+        });
+
+      setSelectorOptions(columnOptions);
+      setSelectedOption(columnOptions[0]);
+    }
+  }, [boards, selectedBoard]);
+
   function onSubmit(data) {
-    console.log("Here...", data);
+    const taskData = {
+      title: data.title,
+      status: selectedOption.value,
+      columnId: selectedOption.id,
+    };
+
+    delete data.title;
+    if (data.description) {
+      taskData.description = data.description;
+      delete data.description;
+    }
+
+    if (subtasks && subtasks.length > 0) {
+      const subtaskList = subtasks.map((subtask) => subtask.value);
+      taskData.subtasks = subtaskList;
+    }
+
+    createTask(taskData, {
+      onSuccess: (data) => {
+        reset();
+        onCloseModal?.();
+      },
+    });
   }
 
   function addSubtask() {
     setSubtasks((subtasks) => {
-      return [...subtasks, { placeholder: "e.g. My new subtask" }];
+      return [
+        ...subtasks,
+        { placeholder: "e.g. My new subtask", key: subtasks.length },
+      ];
     });
   }
 
@@ -201,7 +247,7 @@ function AddTask({ taskToEdit = {} }) {
             error={errors?.title?.message}
           />
           {errors?.title?.message && (
-            <ErrorMessageMain>Can't be empty!</ErrorMessageMain>
+            <ErrorMessageMain>{errors?.title?.message}</ErrorMessageMain>
           )}
         </ElementGroup>
         <ElementGroup>
@@ -211,13 +257,14 @@ function AddTask({ taskToEdit = {} }) {
 recharge the batteries a little."
             height={"4rem"}
             darkMode={darkMode}
+            {...register("description")}
           />
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Subtasks</SubTitle>
           {subtasks.map((subtask, index) => (
             <Subtask
-              index={index}
+              index={subtask.key}
               darkMode={darkMode}
               placeholder={subtask.placeholder}
               setSubtasks={setSubtasks}
@@ -233,7 +280,12 @@ recharge the batteries a little."
         </ElementGroup>
         <ElementGroup>
           <SubTitle>Status</SubTitle>
-          <Selector />
+          <Selector
+            options={selectorOptions}
+            register={register}
+            isEditSession={isEditSession}
+            onChangeHandler={setSelectedOption}
+          />
         </ElementGroup>
         <ElementGroup>
           <FormButton variation="primary">Create Task</FormButton>
@@ -254,7 +306,18 @@ function Subtask({
   error,
 }) {
   function deleteSubtask() {
-    setSubtasks((subtasks) => subtasks.filter((sub, i) => i !== index));
+    setSubtasks((subtasks) => subtasks.filter((sub, i) => sub.key !== index));
+  }
+
+  function onChangeHandler(e) {
+    setSubtasks((subtasks) =>
+      subtasks.map((subtask, i) => {
+        if (i === index) {
+          subtask.value = e.target.value;
+        }
+        return subtask;
+      })
+    );
   }
 
   return (
@@ -271,6 +334,7 @@ function Subtask({
               : `Subtask-${index} Can't be empty!`,
           })}
           error={error}
+          onChange={(e) => onChangeHandler(e)}
         ></TextField>
         <Close src={CrossIcon} onClick={deleteSubtask} />
       </SubtaskElement>

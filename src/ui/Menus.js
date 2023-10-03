@@ -73,7 +73,11 @@ const StyledButton = styled.button`
   }};
 
   &:hover {
-    background-color: var(--color-light-grey-light);
+    background-color: ${(props) => {
+      return props.darkMode === true
+        ? "var(--color-dark-grey)"
+        : "var(--color-light-grey-light);";
+    }};
   }
 `;
 
@@ -95,16 +99,14 @@ function Menus({ children }) {
   );
 }
 
-function Toggle({ id }) {
+function Toggle({ id, variation }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
     const rect = e.target.closest("button").getBoundingClientRect();
 
-    setPosition({
-      x: -50,
-      y: 80,
-    });
+    const pos = variation === "header" ? { x: 10, y: 80 } : { x: -50, y: 80 };
+    setPosition(pos);
     e.preventDefault();
 
     openId === "" || openId !== id ? open(id) : close();
@@ -132,6 +134,7 @@ function List({ id, children }) {
 
 function Button({ children, icon, onClick, type }) {
   const { close } = useContext(MenusContext);
+  const { darkMode } = useSelector((state) => state.app);
 
   function handleClick(e) {
     onClick?.();
@@ -140,7 +143,11 @@ function Button({ children, icon, onClick, type }) {
 
   return (
     <li>
-      <StyledButton onClick={(e) => handleClick(e)} type={type}>
+      <StyledButton
+        onClick={(e) => handleClick(e)}
+        type={type}
+        darkMode={darkMode}
+      >
         {icon}
         <span>{children}</span>
       </StyledButton>

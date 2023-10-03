@@ -6,21 +6,25 @@ import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import NewColumn from "../../ui/NewColumn";
 import { useMoveTask } from "./useMoveTask";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
   gap: 1.2rem;
 `;
 
-function Tasks({ boardData }) {
-  // const [tasksData, setTasksData] = useState(initialData);
-
+function Tasks() {
   const [tasksData, setTasksData] = useState(null);
   const { isMoving, moveTask } = useMoveTask();
+  const { boards, selectedBoard } = useSelector((state) => state.board);
 
   useEffect(() => {
-    setTasksData(boardData);
-  }, [boardData]);
+    setTasksData(boards.find((board) => board.name === selectedBoard));
+  }, [boards, selectedBoard]);
+
+  if (!selectedBoard) {
+    return <></>;
+  }
 
   if (!tasksData || !tasksData.columns.length) {
     return <EmptyBoard />;
@@ -40,7 +44,7 @@ function Tasks({ boardData }) {
       return;
     }
 
-    const newTasksData = Object.assign({}, tasksData);
+    const newTasksData = JSON.parse(JSON.stringify(tasksData));
 
     //Retrieve the task
     const task = newTasksData.columns
@@ -55,8 +59,6 @@ function Tasks({ boardData }) {
 
     //Update the state
     setTasksData(newTasksData);
-
-    console.log("Destination ", destination);
 
     //Make the API call
     const dataObj = {
@@ -73,7 +75,6 @@ function Tasks({ boardData }) {
       <Container>
         {tasksData?.columns?.map((column) => {
           const tasks = column.tasks;
-          /* Change key to an ID later */
           return <Column key={column._id} column={column} tasks={tasks} />;
         })}
         <NewColumn />

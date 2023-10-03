@@ -11,6 +11,7 @@ import AddTask from "../features/tasks/AddTask";
 import { useSelector } from "react-redux";
 import { device, size } from "../styles/device";
 import ViewBoardsMobile from "./ViewBoardsMobile";
+import AddBoard from "../features/boards/AddBoard";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -113,16 +114,10 @@ const StyledChevron = styled.img`
   padding-bottom: 4px;
 `;
 
-function Header({
-  hide,
-  setHide,
-  boardData,
-  selectedBoard,
-  setSelectedBoard,
-  selectedBoardData,
-  setSelectedBoardData,
-}) {
+function Header({ hide, setHide }) {
   const { darkMode } = useSelector((state) => state.app);
+  const { boards, selectedBoard } = useSelector((state) => state.board);
+  const currentBoard = boards.find((board) => board.name === selectedBoard);
 
   if (window.innerWidth <= size.mobile) {
     return (
@@ -143,13 +138,7 @@ function Header({
               </BoardName>
             </Modal.Open>
             <Modal.Window type="mobile" name="view-boards">
-              <ViewBoardsMobile
-                boardData={boardData}
-                selectedBoard={selectedBoard}
-                setSelectedBoard={setSelectedBoard}
-                selectedBoardData={selectedBoardData}
-                setSelectedBoardData={setSelectedBoardData}
-              />
+              <ViewBoardsMobile />
             </Modal.Window>
           </Modal>
         </HeaderLogoContainer>
@@ -197,16 +186,21 @@ function Header({
           <Modal.Window name="add-task">
             <AddTask />
           </Modal.Window>
+          <Modal.Window name="edit-board">
+            <AddBoard boardToEdit={currentBoard} />
+          </Modal.Window>
+          <Menus>
+            <Menus.Menu>
+              <Menus.Toggle id={"view"} variation={"header"} />
+              <Menus.List id={"view"}>
+                <Modal.Open opens="edit-board">
+                  <Menus.Button type="edit">Edit Board</Menus.Button>
+                </Modal.Open>
+                <Menus.Button type="delete">Delete Board</Menus.Button>
+              </Menus.List>
+            </Menus.Menu>
+          </Menus>
         </Modal>
-        <Menus>
-          <Menus.Menu>
-            <Menus.Toggle id={"view"} />
-            <Menus.List id={"view"}>
-              <Menus.Button type="edit">Edit Board</Menus.Button>
-              <Menus.Button type="delete">Delete Board</Menus.Button>
-            </Menus.List>
-          </Menus.Menu>
-        </Menus>
       </TaskContainer>
     </StyledHeader>
   );

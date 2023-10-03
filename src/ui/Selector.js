@@ -1,14 +1,13 @@
 import Select from "react-select";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
-function Selector() {
+function Selector({ options = [], register, isEditSession, onChangeHandler }) {
   const { darkMode } = useSelector((state) => state.app);
 
-  const options = [
-    { value: "Todo", label: "Todo" },
-    { value: "Doing", label: "Doing" },
-    { value: "Done", label: "Done" },
-  ];
+  if (!options.length) {
+    return <></>;
+  }
 
   return (
     <Select
@@ -58,6 +57,8 @@ function Selector() {
         },
       })}
       options={options}
+      defaultValue={options[0]}
+      onChange={onChangeHandler}
     />
   );
 }

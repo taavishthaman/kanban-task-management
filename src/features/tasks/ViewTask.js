@@ -107,12 +107,15 @@ function ViewTask({ taskData }) {
         {description && <StyledDescription>{description}</StyledDescription>}
         {subtasks && (
           <SubtasksContainer>
-            <SubHeading>Subtasks (2 of 3)</SubHeading>
+            <SubHeading>
+              Subtasks ({subtasks.filter((task) => task.completed).length} of{" "}
+              {subtasks.length})
+            </SubHeading>
             <Subtasks>
               {subtasks.map((subtask) => (
                 <Subtask darkMode={darkMode}>
                   <StyledCheckbox />
-                  {subtask.title}
+                  {subtask.name}
                 </Subtask>
               ))}
             </Subtasks>

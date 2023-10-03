@@ -3,6 +3,9 @@ import IconBoard from "../assets/icon-board.svg";
 import IconBoardSelected from "../assets/icon-board-selected.svg";
 import { useSelector } from "react-redux";
 import { device } from "../styles/device";
+import { setSelectedBoard } from "../features/boards/boardSlice";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 const variationsBackground = {
   unselected: {
@@ -66,24 +69,19 @@ const BoardName = styled.p`
 
 const BoardIconImg = styled.img``;
 
-function SelectBoard({
-  name,
-  selected = false,
-  setSelectedBoard,
-  setSelectedBoardData,
-  boardData,
-}) {
+function SelectBoard({ name }) {
   const { darkMode } = useSelector((state) => state.app);
+  const { selectedBoard } = useSelector((state) => state.board);
+  const selected = selectedBoard === name;
+
+  const dispatch = useDispatch();
 
   return (
     <StyledSelectBoard
       variation={`${selected ? "selected" : "unselected"}`}
       darkMode={darkMode}
       onClick={() => {
-        setSelectedBoard(name);
-        setSelectedBoardData(
-          boardData.data.data.find((data) => data.name === name)
-        );
+        dispatch(setSelectedBoard(name));
       }}
     >
       <BoardIconImg src={selected ? IconBoardSelected : IconBoard} />
