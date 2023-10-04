@@ -27,7 +27,7 @@ function Tasks() {
   }
 
   if (!tasksData || !tasksData.columns.length) {
-    return <EmptyBoard />;
+    return <EmptyBoard boardData={tasksData} />;
   }
 
   function onDragEnd(result) {
@@ -77,7 +77,7 @@ function Tasks() {
           const tasks = column.tasks;
           return <Column key={column._id} column={column} tasks={tasks} />;
         })}
-        <NewColumn />
+        <NewColumn boardData={tasksData} />
       </Container>
     </DragDropContext>
   );

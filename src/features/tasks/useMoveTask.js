@@ -7,7 +7,10 @@ export function useMoveTask() {
   const { mutate: moveTask, isLoading: isMoving } = useMutation({
     mutationFn: moveTasks,
     onSuccess: () => {
-      //queryClient.invalidateQueries({ queryKey: ["board"] });
+      setTimeout(() => {
+        //This hack seems to be working better than default behaviour
+        queryClient.invalidateQueries({ queryKey: ["board"] });
+      }, 3000);
     },
     onError: (err) => {
       console.log("Some error occured ", err);

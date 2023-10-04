@@ -10,6 +10,10 @@ const colorMap = {
     background: "#635FC71A",
     color: "var(--color-main-purple)",
   },
+  delete: {
+    background: "var(--color-red)",
+    color: "var(--color-white)",
+  },
 };
 
 const StyledButton = styled.button`

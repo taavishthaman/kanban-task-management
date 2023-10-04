@@ -1,7 +1,7 @@
 import Checkbox from "react-custom-checkbox";
 import * as Icon from "react-icons/fi";
 
-function StyledCheckbox() {
+function StyledCheckbox({ checked, subtask, onChangeHandler }) {
   return (
     <Checkbox
       icon={
@@ -19,6 +19,10 @@ function StyledCheckbox() {
         </div>
       }
       borderColor="#635FC7"
+      checked={checked}
+      onChange={(view, event) => {
+        onChangeHandler(view, event, subtask);
+      }}
     />
   );
 }

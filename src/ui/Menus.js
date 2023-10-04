@@ -67,7 +67,7 @@ const StyledButton = styled.button`
   line-height: 1.5rem;
 
   color: ${(props) => {
-    return props.type === "edit"
+    return props.variation === "edit"
       ? "var(--color-medium-grey)"
       : "var(--color-red)";
   }};
@@ -126,13 +126,13 @@ function List({ id, children }) {
   if (openId !== id) return null;
 
   return (
-    <StyledList position={position} ref={ref} darkMode={darkMode}>
+    <StyledList position={position} ref={ref} darkMode={darkMode} id="menus">
       {children}
     </StyledList>
   );
 }
 
-function Button({ children, icon, onClick, type }) {
+function Button({ children, icon, onClick, variation }) {
   const { close } = useContext(MenusContext);
   const { darkMode } = useSelector((state) => state.app);
 
@@ -145,8 +145,9 @@ function Button({ children, icon, onClick, type }) {
     <li>
       <StyledButton
         onClick={(e) => handleClick(e)}
-        type={type}
+        variation={variation}
         darkMode={darkMode}
+        type={"button"}
       >
         {icon}
         <span>{children}</span>

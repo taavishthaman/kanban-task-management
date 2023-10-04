@@ -1,10 +1,15 @@
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import Form from "../../ui/Form";
 import styled from "styled-components";
 import StyledCheckbox from "../../ui/StyledCheckbox";
 import Menus from "../../ui/Menus";
 import { useSelector } from "react-redux";
 import Selector from "../../ui/Selector";
+import Modal from "../../ui/Modal";
+import AddTask from "./AddTask";
+import DeleteTask from "./DeleteTask";
+import { useSetSubtaskStatus } from "./useSetSubtaskStatus";
 
 const FormBody = styled.div`
   display: flex;
@@ -88,47 +93,110 @@ function ViewTask({ taskData }) {
   const { title, description, subtasks } = taskData;
 
   const { darkMode } = useSelector((state) => state.app);
+  const { selectedBoard, boards } = useSelector((state) => state.board);
+  const [selectorOptions, setSelectorOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [defaultOption, setDefaultOption] = useState(null);
+  const { isSetting, setSubtaskStatus } = useSetSubtaskStatus();
+
+  useEffect(() => {
+    if (selectedBoard) {
+      const columnOptions = boards
+        .filter((board) => board.name === selectedBoard)
+        .at(0)
+        .columns.map((column) => {
+          return {
+            label: column.name,
+            value: column.name,
+            id: column._id,
+          };
+        });
+
+      setSelectorOptions(columnOptions);
+      setSelectedOption(columnOptions[0]);
+      setDefaultOption(
+        columnOptions.filter((option) => option.id === taskData.columnId)
+      );
+    }
+  }, [boards, selectedBoard, taskData.columnId]);
+
+  function onChangeHandler(view, event, subtask) {
+    console.log("View", view);
+    console.log("Event ", event);
+    console.log("Subtask", subtask);
+
+    setSubtaskStatus(
+      {
+        subtaskId: subtask._id,
+        completed: view,
+      },
+      {
+        onSuccess: (data) => {},
+      }
+    );
+  }
 
   return (
-    <Form>
-      <FormBody>
-        <StyledHeader>
-          <StyledTitle darkMode={darkMode}>{title}</StyledTitle>
-          <Menus>
-            <Menus.Menu>
-              <Menus.Toggle id={"view"} />
-              <Menus.List id={"view"}>
-                <Menus.Button type="edit">Edit Task</Menus.Button>
-                <Menus.Button type="delete">Delete Task</Menus.Button>
-              </Menus.List>
-            </Menus.Menu>
-          </Menus>
-        </StyledHeader>
-        {description && <StyledDescription>{description}</StyledDescription>}
-        {subtasks && (
-          <SubtasksContainer>
-            <SubHeading>
-              Subtasks ({subtasks.filter((task) => task.completed).length} of{" "}
-              {subtasks.length})
-            </SubHeading>
-            <Subtasks>
-              {subtasks.map((subtask) => (
-                <Subtask darkMode={darkMode}>
-                  <StyledCheckbox />
-                  {subtask.name}
-                </Subtask>
-              ))}
-            </Subtasks>
-          </SubtasksContainer>
-        )}
-        <div>
-          <SubHeading>Current Status</SubHeading>
-          <SelectDiv>
-            <Selector />
-          </SelectDiv>
-        </div>
-      </FormBody>
-    </Form>
+    <Modal>
+      <Form>
+        <FormBody>
+          <StyledHeader>
+            <StyledTitle darkMode={darkMode}>{title}</StyledTitle>
+            <Modal.Window name="edit-task">
+              <AddTask taskToEdit={taskData} />
+            </Modal.Window>
+            <Modal.Window name="delete-task">
+              <DeleteTask taskData={taskData} />
+            </Modal.Window>
+            <Menus>
+              <Menus.Menu>
+                <Menus.Toggle id={"view"} />
+                <Menus.List id={"view"}>
+                  <Modal.Open opens="edit-task">
+                    <Menus.Button variation="edit">Edit Task</Menus.Button>
+                  </Modal.Open>
+                  <Modal.Open opens="delete-task">
+                    <Menus.Button variation="delete">Delete Task</Menus.Button>
+                  </Modal.Open>
+                </Menus.List>
+              </Menus.Menu>
+            </Menus>
+          </StyledHeader>
+          {description && <StyledDescription>{description}</StyledDescription>}
+          {subtasks && (
+            <SubtasksContainer>
+              <SubHeading>
+                Subtasks ({subtasks.filter((task) => task.completed).length} of{" "}
+                {subtasks.length})
+              </SubHeading>
+              <Subtasks>
+                {subtasks.map((subtask) => (
+                  <Subtask darkMode={darkMode}>
+                    <StyledCheckbox
+                      checked={subtask.completed}
+                      subtask={subtask}
+                      onChangeHandler={onChangeHandler}
+                    />
+                    {subtask.name}
+                  </Subtask>
+                ))}
+              </Subtasks>
+            </SubtasksContainer>
+          )}
+          <div>
+            <SubHeading>Current Status</SubHeading>
+            <SelectDiv>
+              <Selector
+                options={selectorOptions}
+                onChangeHandler={setSelectedOption}
+                defaultValue={defaultOption}
+                disabled={true}
+              />
+            </SelectDiv>
+          </div>
+        </FormBody>
+      </Form>
+    </Modal>
   );
 }
 

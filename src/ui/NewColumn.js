@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Modal from "./Modal";
+import AddBoard from "../features/boards/AddBoard";
 import { useSelector } from "react-redux";
 
 const StyledAddButton = styled.div`
@@ -32,12 +34,21 @@ const BtnText = styled.div`
   width: 17rem;
 `;
 
-function NewColumn() {
+function NewColumn({ boardData }) {
+  console.log("Board Data ", boardData);
   const { darkMode } = useSelector((state) => state.app);
   return (
-    <StyledAddButton darkMode={darkMode}>
-      <BtnText>+ New Column</BtnText>
-    </StyledAddButton>
+    <Modal>
+      <Modal.Open opens="edit-board">
+        <StyledAddButton darkMode={darkMode}>
+          <BtnText>+ New Column</BtnText>
+        </StyledAddButton>
+      </Modal.Open>
+
+      <Modal.Window name="edit-board">
+        <AddBoard boardToEdit={boardData} />
+      </Modal.Window>
+    </Modal>
   );
 }
 

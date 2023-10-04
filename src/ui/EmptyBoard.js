@@ -1,5 +1,7 @@
 import { styled } from "styled-components";
 import Button from "./Button";
+import Modal from "./Modal";
+import AddBoard from "../features/boards/AddBoard";
 
 const StyledEmptyBoard = styled.div`
   display: inline-block;
@@ -23,16 +25,23 @@ const EmptyText = styled.p`
   line-height: normal;
 `;
 
-function EmptyBoard() {
+function EmptyBoard({ boardData }) {
   return (
-    <StyledEmptyBoard>
-      <EmptyText>
-        This board is empty. Create a new column to get started.
-      </EmptyText>
-      <ButtonContainer>
-        <Button>+ Add New Column</Button>
-      </ButtonContainer>
-    </StyledEmptyBoard>
+    <Modal>
+      <StyledEmptyBoard>
+        <EmptyText>
+          This board is empty. Create a new column to get started.
+        </EmptyText>
+        <Modal.Open opens="edit-board">
+          <ButtonContainer>
+            <Button>+ Add New Column</Button>
+          </ButtonContainer>
+        </Modal.Open>
+        <Modal.Window name="edit-board">
+          <AddBoard boardToEdit={boardData} />
+        </Modal.Window>
+      </StyledEmptyBoard>
+    </Modal>
   );
 }
 

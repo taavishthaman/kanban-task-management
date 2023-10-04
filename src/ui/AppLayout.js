@@ -6,6 +6,7 @@ import Tasks from "../features/tasks/Tasks";
 import { useSelector } from "react-redux";
 import Toggler from "./Toggler";
 import { size, device } from "../styles/device";
+import Modal from "./Modal";
 
 const StyledAppLayout = styled.div`
   display: grid;

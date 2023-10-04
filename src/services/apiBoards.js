@@ -41,3 +41,16 @@ export async function editBoardService(input) {
 
   return data;
 }
+
+export async function deleteBoardService(board) {
+  const url = `${baseUrl}/boards/deleteBoard/${board.boardId}`;
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  return;
+}

@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { device, size } from "../styles/device";
 import ViewBoardsMobile from "./ViewBoardsMobile";
 import AddBoard from "../features/boards/AddBoard";
+import DeleteBoard from "../features/boards/DeleteBoard";
+import { useEffect, useState } from "react";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -118,6 +120,15 @@ function Header({ hide, setHide }) {
   const { darkMode } = useSelector((state) => state.app);
   const { boards, selectedBoard } = useSelector((state) => state.board);
   const currentBoard = boards.find((board) => board.name === selectedBoard);
+  const [disabledButton, setDisabledButton] = useState(true);
+
+  useEffect(() => {
+    if (currentBoard && currentBoard.columns.length > 0) {
+      setDisabledButton(false);
+    } else {
+      setDisabledButton(true);
+    }
+  }, [currentBoard]);
 
   if (window.innerWidth <= size.mobile) {
     return (
@@ -146,7 +157,9 @@ function Header({ hide, setHide }) {
           <Modal>
             <Modal.Open opens="add-task">
               <div>
-                <Button type="mobile">+</Button>
+                <Button type="mobile" disabled={disabledButton}>
+                  +
+                </Button>
               </div>
             </Modal.Open>
             <Modal.Window name="add-task">
@@ -174,13 +187,13 @@ function Header({ hide, setHide }) {
             <StyledImg src={darkMode ? LogoDark : LogoLight} />
           </StyledHiddenLogo>
         )}
-        <BoardName darkMode={darkMode}>Platform Launch</BoardName>
+        <BoardName darkMode={darkMode}>{selectedBoard}</BoardName>
       </HeaderLogoContainer>
       <TaskContainer>
         <Modal>
           <Modal.Open opens="add-task">
             <div>
-              <Button>+ Add New Task</Button>
+              <Button disabled={disabledButton}>+ Add New Task</Button>
             </div>
           </Modal.Open>
           <Modal.Window name="add-task">
@@ -189,14 +202,19 @@ function Header({ hide, setHide }) {
           <Modal.Window name="edit-board">
             <AddBoard boardToEdit={currentBoard} />
           </Modal.Window>
+          <Modal.Window name="delete-board">
+            <DeleteBoard boardData={currentBoard} />
+          </Modal.Window>
           <Menus>
             <Menus.Menu>
               <Menus.Toggle id={"view"} variation={"header"} />
               <Menus.List id={"view"}>
                 <Modal.Open opens="edit-board">
-                  <Menus.Button type="edit">Edit Board</Menus.Button>
+                  <Menus.Button variation="edit">Edit Board</Menus.Button>
                 </Modal.Open>
-                <Menus.Button type="delete">Delete Board</Menus.Button>
+                <Modal.Open opens="delete-board">
+                  <Menus.Button variation="delete">Delete Board</Menus.Button>
+                </Modal.Open>
               </Menus.List>
             </Menus.Menu>
           </Menus>

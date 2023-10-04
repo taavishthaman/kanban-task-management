@@ -69,7 +69,7 @@ function Window({ name, type, children }) {
   if (name !== openName) return null;
 
   return createPortal(
-    <Overlay>
+    <Overlay id="overlay">
       <StyledModal ref={ref} darkMode={darkMode} type={type}>
         <div>{cloneElement(children, { onCloseModal: close })}</div>
       </StyledModal>

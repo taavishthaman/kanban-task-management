@@ -3,9 +3,9 @@ import SelectBoard from "../../ui/SelectBoard";
 import CreateBoard from "./CreateBoard";
 import { device } from "../../styles/device";
 import useBoards from "./useBoards";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { setBoards } from "./boardSlice";
+import { setBoards, setSelectedBoard } from "./boardSlice";
 
 const StyledBoards = styled.div``;
 const BoardsStatus = styled.div`
@@ -32,15 +32,28 @@ const AllBoards = styled.div`
 
 function Boards() {
   const { isLoading, boards: boardData } = useBoards();
+  const { selectedBoard } = useSelector((state) => state.board);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (boardData?.data?.data) {
+    if (boardData?.data?.data && boardData?.data?.data.length > 0) {
       dispatch(setBoards(boardData.data.data));
+      if (!selectedBoard) {
+        dispatch(setSelectedBoard(boardData.data.data[0].name));
+      } else {
+        if (boardData.data.data.find((board) => board.name === selectedBoard)) {
+          dispatch(setSelectedBoard(selectedBoard));
+        } else {
+          dispatch(setSelectedBoard(boardData.data.data[0].name));
+        }
+      }
+    } else {
+      dispatch(setBoards([]));
+      dispatch(setSelectedBoard(""));
     }
-  }, [boardData, dispatch]);
+  }, [boardData, dispatch, selectedBoard]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <></>;
   }
 
   return (

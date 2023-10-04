@@ -2,8 +2,17 @@ import Select from "react-select";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-function Selector({ options = [], register, isEditSession, onChangeHandler }) {
+function Selector({
+  options = [],
+  register,
+  isEditSession,
+  onChangeHandler,
+  defaultValue,
+  disabled,
+}) {
   const { darkMode } = useSelector((state) => state.app);
+
+  console.log("Disabled ", disabled);
 
   if (!options.length) {
     return <></>;
@@ -57,8 +66,9 @@ function Selector({ options = [], register, isEditSession, onChangeHandler }) {
         },
       })}
       options={options}
-      defaultValue={options[0]}
+      defaultValue={defaultValue}
       onChange={onChangeHandler}
+      isDisabled={disabled}
     />
   );
 }

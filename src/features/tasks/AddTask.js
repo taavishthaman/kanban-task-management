@@ -7,6 +7,7 @@ import Selector from "../../ui/Selector";
 import { useSelector } from "react-redux";
 import { useCreateTask } from "./useCreateTask";
 import { useState, useEffect } from "react";
+import { useEditTask } from "./useEditTask";
 
 const FormBody = styled.div`
   display: flex;
@@ -87,6 +88,7 @@ const TextArea = styled.textarea`
   height: 11.2rem;
   font-size: 1.3rem;
   resize: none;
+  font-family: "Plus Jakarta Sans", sans-serif;
   color: ${(props) => {
     return props.darkMode === true
       ? "var(--color-white)"
@@ -107,6 +109,7 @@ const TextArea = styled.textarea`
         ? "rgba(255, 255, 255, 0.25)"
         : "rgba(0, 0, 0, 0.25)";
     }};
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 `;
 
@@ -149,13 +152,13 @@ const Close = styled.img`
 `;
 
 function AddTask({ taskToEdit = {}, onCloseModal }) {
-  //This form should run in either edit or create mode...
-  const { id: taskId, ...editValues } = taskToEdit;
+  const { _id: taskId, ...editValues } = taskToEdit;
 
   const { darkMode } = useSelector((state) => state.app);
   const isEditSession = Boolean(taskId);
 
   const { isCreating, createTask } = useCreateTask();
+  const { isEditing, editTask } = useEditTask();
 
   const { register, handleSubmit, reset, getValues, formState } = useForm({
     defaultValues: isEditSession ? editValues : {},
@@ -163,14 +166,27 @@ function AddTask({ taskToEdit = {}, onCloseModal }) {
 
   const { errors } = formState;
 
-  const [subtasks, setSubtasks] = useState([
-    { placeholder: "e.g. Make coffee", key: 0 },
-    { placeholder: "e.g. Drink coffee & smile", key: 1 },
-  ]);
+  console.log("Edit Values ", editValues);
+
+  const [subtasks, setSubtasks] = useState(() => {
+    return isEditSession
+      ? editValues.subtasks.map((subtask, index) => {
+          return {
+            ...subtask,
+            key: index,
+            placeholder: "e.g. My new subtask",
+          };
+        })
+      : [
+          { placeholder: "e.g. Make coffee", key: 0 },
+          { placeholder: "e.g. Drink coffee & smile", key: 1 },
+        ];
+  });
 
   const { selectedBoard, boards } = useSelector((state) => state.board);
   const [selectorOptions, setSelectorOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [defaultOption, setDefaultOption] = useState(null);
 
   useEffect(() => {
     if (selectedBoard) {
@@ -187,33 +203,67 @@ function AddTask({ taskToEdit = {}, onCloseModal }) {
 
       setSelectorOptions(columnOptions);
       setSelectedOption(columnOptions[0]);
+      setDefaultOption(
+        columnOptions.filter((option) => option.id === editValues.columnId)
+      );
     }
-  }, [boards, selectedBoard]);
+  }, [boards, editValues.columnId, selectedBoard]);
 
   function onSubmit(data) {
-    const taskData = {
-      title: data.title,
-      status: selectedOption.value,
-      columnId: selectedOption.id,
-    };
+    if (isEditSession) {
+      const editedTaskData = {
+        title: data.title,
+        description: data.description,
+        taskId,
+        columnId: selectedOption.id,
+      };
 
-    delete data.title;
-    if (data.description) {
-      taskData.description = data.description;
-      delete data.description;
+      if (subtasks && subtasks.length > 0) {
+        const subtaskList = subtasks.map((subtask) => {
+          const subObj = {
+            name: subtask.name,
+          };
+          if (subtask._id) {
+            subObj["id"] = subtask._id;
+          }
+
+          return subObj;
+        });
+        editedTaskData.subtasks = subtaskList;
+      }
+
+      editTask(editedTaskData, {
+        onSuccess: (data) => {
+          reset();
+          onCloseModal?.();
+        },
+      });
+    } else {
+      const taskData = {
+        title: data.title,
+        status: selectedOption.value,
+        parentId: selectedOption.id,
+        columnId: selectedOption.id,
+      };
+
+      delete data.title;
+      if (data.description) {
+        taskData.description = data.description;
+        delete data.description;
+      }
+
+      if (subtasks && subtasks.length > 0) {
+        const subtaskList = subtasks.map((subtask) => subtask.name);
+        taskData.subtasks = subtaskList;
+      }
+
+      createTask(taskData, {
+        onSuccess: (data) => {
+          reset();
+          onCloseModal?.();
+        },
+      });
     }
-
-    if (subtasks && subtasks.length > 0) {
-      const subtaskList = subtasks.map((subtask) => subtask.value);
-      taskData.subtasks = subtaskList;
-    }
-
-    createTask(taskData, {
-      onSuccess: (data) => {
-        reset();
-        onCloseModal?.();
-      },
-    });
   }
 
   function addSubtask() {
@@ -232,7 +282,9 @@ function AddTask({ taskToEdit = {}, onCloseModal }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormBody>
-        <StyledTitle darkMode={darkMode}>Add New Task</StyledTitle>
+        <StyledTitle darkMode={darkMode}>
+          {isEditSession ? "Edit Task" : "Add New Task"}
+        </StyledTitle>
         <ElementGroup>
           <SubTitle>Title</SubTitle>
           <TextField
@@ -242,7 +294,7 @@ function AddTask({ taskToEdit = {}, onCloseModal }) {
             id="title"
             disabled={isCreating}
             {...register("title", {
-              required: isEditSession ? false : "Can't be empty!",
+              required: "Can't be empty!",
             })}
             error={errors?.title?.message}
           />
@@ -267,6 +319,7 @@ recharge the batteries a little."
               index={subtask.key}
               darkMode={darkMode}
               placeholder={subtask.placeholder}
+              subtasks={subtasks}
               setSubtasks={setSubtasks}
               isCreating={isCreating}
               register={register}
@@ -285,10 +338,13 @@ recharge the batteries a little."
             register={register}
             isEditSession={isEditSession}
             onChangeHandler={setSelectedOption}
+            defaultValue={defaultOption}
           />
         </ElementGroup>
         <ElementGroup>
-          <FormButton variation="primary">Create Task</FormButton>
+          <FormButton variation="primary">
+            {isEditSession ? "Save Changes" : "Create Task"}
+          </FormButton>
         </ElementGroup>
       </FormBody>
     </Form>
@@ -300,6 +356,7 @@ function Subtask({
   darkMode,
   placeholder,
   setSubtasks,
+  subtasks,
   isCreating,
   register,
   isEditSession,
@@ -313,7 +370,7 @@ function Subtask({
     setSubtasks((subtasks) =>
       subtasks.map((subtask, i) => {
         if (i === index) {
-          subtask.value = e.target.value;
+          subtask.name = e.target.value;
         }
         return subtask;
       })
@@ -329,12 +386,12 @@ function Subtask({
           darkMode={darkMode}
           disabled={isCreating}
           {...register(`subtask-${index}`, {
-            required: isEditSession
-              ? false
-              : `Subtask-${index} Can't be empty!`,
+            required: `Subtask-${index} Can't be empty!`,
           })}
           error={error}
           onChange={(e) => onChangeHandler(e)}
+          //Fix this line
+          defaultValue={isEditSession ? subtasks[index]?.name : ""}
         ></TextField>
         <Close src={CrossIcon} onClick={deleteSubtask} />
       </SubtaskElement>

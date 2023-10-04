@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { device } from "../styles/device";
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
   background-color: var(--color-main-purple);
   width: 16.4rem;
   height: 4.8rem;
@@ -11,14 +18,19 @@ const StyledButton = styled.div`
   justify-content: center;
   font-size: 1.5rem;
   color: var(--color-white);
-  cursor: pointer;
   height: ${(props) => (props.type === "mobile" ? "3.2rem" : "4.8rem")};
   width: ${(props) => (props.type === "mobile" ? "4.8rem" : "16.4rem")};
+  opacity: ${(props) => (props.disabled === true ? "0.5" : "1")};
 `;
 
-function Button({ handleClick = null, children, type }) {
+function Button({ handleClick = null, children, type, disabled }) {
+  console.log("Disabled Value ", disabled);
   return (
-    <StyledButton onClick={handleClick} type={type}>
+    <StyledButton
+      onClick={disabled ? () => {} : handleClick}
+      type={type}
+      disabled={disabled}
+    >
       {children}
     </StyledButton>
   );

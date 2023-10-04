@@ -168,11 +168,11 @@ function AddBoard({ boardToEdit = {}, onCloseModal }) {
     } else {
       const { title } = data;
       delete data.title;
-      const columns = Object.values(data);
+      const columnNames = columns.map((column) => column.title);
       createBoard(
         {
           name: title,
-          columns,
+          columns: columnNames,
         },
         {
           onSuccess: (data) => {
@@ -208,7 +208,7 @@ function AddBoard({ boardToEdit = {}, onCloseModal }) {
             defaultValue={isEditSession ? editValues.name : ""}
             darkMode={darkMode}
             {...register("title", {
-              required: isEditSession ? false : "Can't be empty!",
+              required: "Can't be empty!",
             })}
             error={errors?.title?.message}
           />
@@ -272,7 +272,7 @@ function Column({
           defaultValue={title}
           darkMode={darkMode}
           {...register(`column-${index}`, {
-            required: isEditSession ? false : `Column-${index} Can't be empty!`,
+            required: `Column-${index} Can't be empty!`,
           })}
           onChange={isEditSession ? editColumn : () => {}}
           error={error}

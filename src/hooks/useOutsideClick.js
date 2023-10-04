@@ -6,7 +6,19 @@ export function useOutsideClick(handler, listenCapturing = true) {
   useEffect(
     function () {
       function handleClick(e) {
-        if (ref.current && !ref.current.contains(e.target)) {
+        // if (ref.current && !ref.current.contains(e.target)) {
+        //   //This right here is the problem, find a different way to close the form
+        //   handler();
+        // }
+
+        if (
+          ref.current &&
+          ref.current.id === "menus" &&
+          !ref.current.contains(e.target)
+        ) {
+          handler();
+        }
+        if (e.target.id === "overlay") {
           handler();
         }
       }
