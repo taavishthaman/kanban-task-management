@@ -73,9 +73,16 @@ function Tasks() {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Container>
-        {tasksData?.columns?.map((column) => {
+        {tasksData?.columns?.map((column, index) => {
           const tasks = column.tasks;
-          return <Column key={column._id} column={column} tasks={tasks} />;
+          return (
+            <Column
+              key={column._id}
+              column={column}
+              tasks={tasks}
+              index={index}
+            />
+          );
         })}
         <NewColumn boardData={tasksData} />
       </Container>

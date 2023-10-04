@@ -21,10 +21,12 @@ const StyledButton = styled.button`
   height: ${(props) => (props.type === "mobile" ? "3.2rem" : "4.8rem")};
   width: ${(props) => (props.type === "mobile" ? "4.8rem" : "16.4rem")};
   opacity: ${(props) => (props.disabled === true ? "0.5" : "1")};
+  &:hover {
+    background-color: var(--color-main-purple-hover);
+  }
 `;
 
 function Button({ handleClick = null, children, type, disabled }) {
-  console.log("Disabled Value ", disabled);
   return (
     <StyledButton
       onClick={disabled ? () => {} : handleClick}

@@ -32,10 +32,12 @@ const BtnText = styled.div`
   font-weight: 700;
   line-height: normal;
   width: 17rem;
+  &:hover {
+    color: var(--color-main-purple);
+  }
 `;
 
 function NewColumn({ boardData }) {
-  console.log("Board Data ", boardData);
   const { darkMode } = useSelector((state) => state.app);
   return (
     <Modal>

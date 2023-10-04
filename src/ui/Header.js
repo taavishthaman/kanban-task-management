@@ -207,7 +207,11 @@ function Header({ hide, setHide }) {
           </Modal.Window>
           <Menus>
             <Menus.Menu>
-              <Menus.Toggle id={"view"} variation={"header"} />
+              <Menus.Toggle
+                id={"view"}
+                variation={"header"}
+                disabled={disabledButton}
+              />
               <Menus.List id={"view"}>
                 <Modal.Open opens="edit-board">
                   <Menus.Button variation="edit">Edit Board</Menus.Button>

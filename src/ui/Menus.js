@@ -17,6 +17,7 @@ const StyledToggle = styled.button`
   padding: 0.4rem;
   transform: translateX(0.8rem);
   transition: all 0.2s;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-grey-100);
@@ -99,7 +100,7 @@ function Menus({ children }) {
   );
 }
 
-function Toggle({ id, variation }) {
+function Toggle({ id, variation, disabled }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
@@ -112,7 +113,7 @@ function Toggle({ id, variation }) {
     openId === "" || openId !== id ? open(id) : close();
   }
   return (
-    <StyledToggle onClick={(e) => handleClick(e)}>
+    <StyledToggle onClick={(e) => handleClick(e)} disabled={disabled}>
       <HiEllipsisVertical color="#828FA3" />
     </StyledToggle>
   );

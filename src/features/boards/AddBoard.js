@@ -169,6 +169,7 @@ function AddBoard({ boardToEdit = {}, onCloseModal }) {
       const { title } = data;
       delete data.title;
       const columnNames = columns.map((column) => column.title);
+      console.log("Column Names ", columnNames);
       createBoard(
         {
           name: title,
@@ -274,7 +275,7 @@ function Column({
           {...register(`column-${index}`, {
             required: `Column-${index} Can't be empty!`,
           })}
-          onChange={isEditSession ? editColumn : () => {}}
+          onChange={editColumn}
           error={error}
         ></TextField>
         <Close src={CrossIcon} onClick={() => deleteColumn(index)} />

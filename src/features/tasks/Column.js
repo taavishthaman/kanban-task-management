@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
 import { useSelector } from "react-redux";
+import { colors } from "../../styles/colors";
 
 const Container = styled.div`
   border-radius: 2px;
@@ -45,15 +46,15 @@ const Circle = styled.div`
   height: 1.2rem;
   width: 1.2rem;
   border-radius: 1.2rem;
-  background-color: #49c4e5;
+  background-color: ${(props) => props.color};
 `;
 
-function Column({ column, tasks }) {
+function Column({ column, tasks, index }) {
   const { darkMode } = useSelector((state) => state.app);
   return (
     <Container>
       <Title>
-        <Circle />
+        <Circle color={colors[index % colors.length]} />
         {column.name}
       </Title>
       <Droppable droppableId={column._id}>

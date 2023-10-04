@@ -121,10 +121,6 @@ function ViewTask({ taskData }) {
   }, [boards, selectedBoard, taskData.columnId]);
 
   function onChangeHandler(view, event, subtask) {
-    console.log("View", view);
-    console.log("Event ", event);
-    console.log("Subtask", subtask);
-
     setSubtaskStatus(
       {
         subtaskId: subtask._id,

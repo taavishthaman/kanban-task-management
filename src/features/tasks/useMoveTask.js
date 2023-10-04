@@ -10,7 +10,7 @@ export function useMoveTask() {
       setTimeout(() => {
         //This hack seems to be working better than default behaviour
         queryClient.invalidateQueries({ queryKey: ["board"] });
-      }, 3000);
+      }, 5000);
     },
     onError: (err) => {
       console.log("Some error occured ", err);

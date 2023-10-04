@@ -5,14 +5,17 @@ const colorMap = {
   primary: {
     background: "var(--color-main-purple)",
     color: "var(--color-white)",
+    backgroundHover: "var(--color-main-purple-hover)",
   },
   secondary: {
     background: "#635FC71A",
     color: "var(--color-main-purple)",
+    backgroundHover: "var(--color-white)",
   },
   delete: {
     background: "var(--color-red)",
     color: "var(--color-white)",
+    backgroundHover: "var(--color-red-hover)",
   },
 };
 
@@ -43,6 +46,11 @@ const StyledButton = styled.button`
   font-style: normal;
   font-weight: 700;
   line-height: 2.3rem;
+  &:hover {
+    background-color: ${(props) => {
+      return colorMap[props.variation]["backgroundHover"];
+    }};
+  }
 `;
 
 function FormButton({ variation, type, onClick, children }) {
