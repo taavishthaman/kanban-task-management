@@ -53,7 +53,7 @@ function DeleteTask({ taskData, onCloseModal }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormBody>
-        <StyledTitle>Delete this board?</StyledTitle>
+        <StyledTitle>Delete this task?</StyledTitle>
         <Description>
           Are you sure you want to delete the `{taskData.title}` task and its
           subtasks? This action cannot be reversed.
