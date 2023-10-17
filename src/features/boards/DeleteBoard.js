@@ -54,7 +54,7 @@ function DeleteBoard({ boardData, onCloseModal }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormBody>
-        <StyledTitle>Delete this task?</StyledTitle>
+        <StyledTitle>Delete this board?</StyledTitle>
         <Description>
           Are you sure you want to delete the `{boardData.name}` board? This
           action will remove all columns and tasks and cannot be reversed.
