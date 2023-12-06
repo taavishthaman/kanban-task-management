@@ -25,7 +25,11 @@ const StyledAppLayout = styled.div`
   }
 `;
 
-const MainContainer = styled.div``;
+const MainContainer = styled.div`
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 const Main = styled.main`
   background-color: blue;
